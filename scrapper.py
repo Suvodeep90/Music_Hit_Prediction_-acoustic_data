@@ -11,14 +11,24 @@ import requests
 from bs4 import BeautifulSoup as bs
 import csv
 import pandas as pd
+import os
 
-df = pd.read_csv('C:\\Users\\suvod\ALDA\\song_dataset_final.csv')
+
+data_loc = 'data'
+cwd = os.getcwd()
+source_file = 'song_dataset_url.csv'
+destination_file = 'song_dataset_final.csv'
+data_path = os.path.join(cwd, data_loc)
+source_file_path = os.path.join(data_path, source_file)
+destination_file_path = os.path.join(data_path, destination_file)
+df = pd.read_csv(source_file_path)
 i = 0
 print(df.shape)
 links = df['link'].tolist()
 print(links)
 pos = []
 woc = []
+
 
 for link in links:
     try:
@@ -70,7 +80,7 @@ for link in links:
 df['Peak_Pos'] = pd.DataFrame(data = pos)
 df['WoC'] = pd.DataFrame(data = woc)
 df.drop(['Unnamed: 0'], axis = 1, inplace = True)
-df.to_csv('C:\\Users\\suvod\ALDA\\song_dataset_data.csv', encoding =  'utf-8')
+df.to_csv(destination_file_path, encoding =  'utf-8')
 
 #print(artist_name_list1.prettify())
 #

@@ -7,8 +7,16 @@ Created on Mon Feb 19 14:52:32 2018
 
 import csv
 import pandas as pd
+import os
 
-df = pd.read_csv('C:\\Users\\suvod\ALDA\\song_dataset.csv')
+data_loc = 'data'
+cwd = os.getcwd()
+source_file = 'song_dataset.csv'
+destination_file = 'song_dataset_url.csv'
+data_path = os.path.join(cwd, data_loc)
+source_file_path = os.path.join(data_path, source_file)
+destination_file_path = os.path.join(data_path, destination_file)
+df = pd.read_csv(source_file_path)
 
 songName = df['track'].tolist()
 #print(songName)
@@ -24,4 +32,4 @@ for i in songName:
 df['link'] = pd.DataFrame(data = rest)
 print(df['link'])
 
-df.to_csv('C:\\Users\\suvod\ALDA\\song_dataset_final.csv', encoding =  'utf-8')
+df.to_csv(destination_file_path, encoding =  'utf-8')
