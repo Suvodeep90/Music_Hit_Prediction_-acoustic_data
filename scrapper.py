@@ -15,6 +15,7 @@ import os
 
 
 data_loc = 'data'
+col2 = " "
 cwd = os.getcwd()
 source_file = 'song_dataset_url.csv'
 destination_file = 'song_dataset_final.csv'
@@ -25,12 +26,14 @@ df = pd.read_csv(source_file_path)
 i = 0
 print(df.shape)
 links = df['link'].tolist()
+artists = df['artist'].tolist()
+links = list(zip(links,artists))
 print(links)
 pos = []
 woc = []
 
 
-for link in links:
+for link,artist in links:
     try:
         page = requests.get(link)
         print(link)
@@ -46,6 +49,7 @@ for link in links:
         rows = table.findChildren('tr')
         
         j = 0
+        found = False
         for row in rows:
             cells = row.findChildren('td')
             i = 0
@@ -55,20 +59,34 @@ for link in links:
                 #print(clean_content)
                 i = i + 1
                 if "Sorry, there are no Official Singles Chart results" in clean_content:
+                    print(0)
+                    print(0)
+                    found = True
                     pos.append('0')
                     woc.append('0')
                 #if i in [5,4,3]:
                     #print(clean_content)
-                if i == 3:
-                    pos.append(clean_content)     
-                elif i == 4:
-                    woc.append(clean_content)
-                
+                if i == 2:
+                    col2 = clean_content
+                if artist.upper() in col2:
+                    found = True
+                    if i == 3:
+                        pos.append(clean_content)
+                        print(clean_content)
+                    elif i == 4:
+                        woc.append(clean_content)
+                        print(clean_content)
+                    
             #print('value of i:', i)
             j += 1
             #print('value of j:', j)
-            if j >= 2:
-                break
+#            if j >= 2:
+#                break
+        if not found:
+            print(0)
+            print(0)
+            pos.append('0')
+            woc.append('0')
         print("+++++++++++++++++++++++++++++++++++++++++++++++")
     except IndexError:
         continue
