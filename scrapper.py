@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup as bs
 import csv
 import pandas as pd
 import os
+import sys
 
 
 data_loc = 'data'
@@ -31,10 +32,12 @@ links = list(zip(links,artists))
 print(links)
 pos = []
 woc = []
-
+k = 0
 
 for link,artist in links:
     try:
+        print("Iteration:",k)
+        k += 1
         page = requests.get(link)
         print(link)
         
@@ -72,16 +75,17 @@ for link,artist in links:
                     found = True
                     if i == 3:
                         pos.append(clean_content)
+                        j += 1
                         print(clean_content)
                     elif i == 4:
                         woc.append(clean_content)
+                        j += 1
                         print(clean_content)
                     
             #print('value of i:', i)
-            j += 1
             #print('value of j:', j)
-#            if j >= 2:
-#                break
+            if j >= 2:
+                break
         if not found:
             print(0)
             print(0)
@@ -89,15 +93,20 @@ for link,artist in links:
             woc.append('0')
         print("+++++++++++++++++++++++++++++++++++++++++++++++")
     except IndexError:
+        pos.append('0')
+        woc.append('0')
         continue
     except:
-        break
+        print("Unexpected error:", sys.exc_info()[0])
+        pos.append('0')
+        woc.append('0')
+        continue
 #artist_name_list1 = soup.find(class_='chart-results-content')
 #artist_name_list2 = soup.find
 #artist_name_list_items = artist_name_list1
 df['Peak_Pos'] = pd.DataFrame(data = pos)
 df['WoC'] = pd.DataFrame(data = woc)
-df.drop(['Unnamed: 0'], axis = 1, inplace = True)
+#df.drop(['Unnamed: 0'], axis = 1, inplace = True)
 df.to_csv(destination_file_path, encoding =  'utf-8')
 
 #print(artist_name_list1.prettify())
