@@ -53,6 +53,7 @@ for link,artist in links:
         
         j = 0
         found = False
+        col2 = ""
         for row in rows:
             cells = row.findChildren('td')
             i = 0
@@ -81,9 +82,7 @@ for link,artist in links:
                         woc.append(clean_content)
                         j += 1
                         print(clean_content)
-                    
-            #print('value of i:', i)
-            #print('value of j:', j)
+
             if j >= 2:
                 break
         if not found:
@@ -93,11 +92,15 @@ for link,artist in links:
             woc.append('0')
         print("+++++++++++++++++++++++++++++++++++++++++++++++")
     except IndexError:
+        print(0)
+        print(0)
         pos.append('0')
         woc.append('0')
         continue
-    except:
+    except Exception:
         print("Unexpected error:", sys.exc_info()[0])
+        print(0)
+        print(0)
         pos.append('0')
         woc.append('0')
         continue
