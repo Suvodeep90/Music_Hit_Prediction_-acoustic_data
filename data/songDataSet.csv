@@ -5401,13 +5401,11 @@ acousticness,$album,$artist,available_markets,danceability,duration_ms,energy,in
 0.229,Despacito - Remix,Luis Fonsi,59,0.694,228827,0.815,0,2,0.0924,-4.328,1,0.12,88.931,4,Despacito - Remix,1,0.826,1,FALSE,TRUE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Despacito%20-%20Remix/,0,0,0,0
 0.0329,Wild Thoughts,DJ Khaled,61,0.671,204173,0.672,0,0,0.118,-3.094,0,0.0688,97.98,4,Wild Thoughts,3,0.636,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Wild%20Thoughts/,1,25,1,1
 0.0293,Unforgettable,French Montana,62,0.726,233902,0.769,0.0101,6,0.104,-5.043,1,0.123,97.985,4,Unforgettable,2,0.75,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Unforgettable/,2,45,1,1
-0.214,,,0,0.543,194978,0.661,0,8,0.241,-5.855,0,0.0538,144.967,4,,7,0.552,1,FALSE,,,,,http://www.officialcharts.com/search/singles/nan/,0,0,0,0
 0.0552,I'm the One,DJ Khaled,61,0.609,288600,0.668,0,7,0.167,-4.284,1,0.0367,80.924,4,I'm the One,4,0.8,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/I'm%20the%20One/,1,23,1,1
 0.0148,Mi Gente,J Balvin,44,0.543,189440,0.677,6.21E-06,11,0.13,-4.915,0,0.0993,103.809,4,Mi Gente,1,0.279,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Mi%20Gente/,5,27,1,1
 0.0642,Feels,Calvin Harris,62,0.893,223413,0.745,0,11,0.0943,-3.105,0,0.0571,101.018,4,Feels,8,0.874,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Feels/,0,0,0,0
 0.581,Shape of You,Ed Sheeran,62,0.825,233713,0.652,0,1,0.0931,-3.183,0,0.0802,95.977,4,Shape of You,4,0.931,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Shape%20of%20You/,1,59,1,1
 0.0969,Attention,Charlie Puth,62,0.774,211475,0.626,3.12E-05,3,0.0848,-4.432,0,0.0432,100.041,4,Attention,1,0.758,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Attention/,9,31,1,1
-0.0152,,,0,0.699,186175,0.614,5.22E-06,2,0.0734,-4.57,1,0.0521,122.99,4,,2,0.279,1,FALSE,,,,,http://www.officialcharts.com/search/singles/nan/,0,0,0,0
 0.246,Strip That Down,Liam Payne,59,0.869,204502,0.485,0,6,0.0765,-5.595,1,0.0545,106.028,4,Strip That Down,1,0.542,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Strip%20That%20Down/,3,25,1,1
 0.00683,Thunder,Imagine Dragons,59,0.6,187147,0.81,0.21,0,0.155,-4.749,1,0.0479,167.88,4,Thunder,9,0.252,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Thunder/,20,27,0,0
 0.11,Mama,Jonas Blue,3,0.746,181615,0.793,0,11,0.0528,-4.209,0,0.0412,104.027,4,Mama,1,0.552,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Mama/,4,31,1,1
@@ -5427,7 +5425,6 @@ acousticness,$album,$artist,available_markets,danceability,duration_ms,energy,in
 0.498,Slide,Calvin Harris,62,0.736,230813,0.795,1.21E-06,1,0.254,-3.299,0,0.0545,104.066,4,Slide,1,0.508,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Slide/,10,25,1,1
 0.15,Pretty Girl - Cheat Codes X CADE Remix,Maggie Lindemann,62,0.703,193613,0.868,0.132,7,0.104,-4.661,0,0.0291,121.03,4,Pretty Girl - Cheat Codes X CADE Remix,1,0.732,1,FALSE,TRUE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Pretty%20Girl%20-%20Cheat%20Codes%20X%20CADE%20Remix/,0,0,0,0
 0.0864,Signs,Drake,59,0.801,234373,0.727,0.00406,0,0.112,-4.687,1,0.0606,107.371,4,Signs,1,0.221,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Signs/,14,15,0,0
-0.191,,,0,0.948,214700,0.405,0,1,0.0804,-6.516,1,0.0795,121.021,4,,6,0.736,1,FALSE,,,,,http://www.officialcharts.com/search/singles/nan/,0,0,0,0
 0.132,Know No Better (feat. Quavo),Major Lazer,3,0.738,225850,0.814,9.64E-06,7,0.126,-4.414,0,0.0999,119.041,4,Know No Better (feat. Quavo),1,0.498,1,TRUE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Know%20No%20Better/,15,16,0,0
 0.158,Your Song,Rita Ora,54,0.855,180757,0.624,0,1,0.0513,-4.093,1,0.0488,117.959,4,Your Song,1,0.962,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Your%20Song/,7,29,1,1
 0.334,Crying in the Club,Camila Cabello,62,0.334,216391,0.617,0,6,0.163,-5.834,0,0.383,85.227,4,Crying in the Club,1,0.63,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Crying%20in%20the%20Club/,12,19,0,0
@@ -5437,7 +5434,6 @@ acousticness,$album,$artist,available_markets,danceability,duration_ms,energy,in
 0.232,Stay (with Alessia Cara),Zedd,59,0.679,210091,0.634,0,5,0.115,-5.024,0,0.0654,102.013,4,Stay (with Alessia Cara),1,0.503,1,FALSE,FALSE,TRUE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Stay/,8,21,1,1
 0.535,I Like Me Better,Lauv,62,0.752,197437,0.505,2.55E-06,9,0.104,-7.621,1,0.253,91.97,4,I Like Me Better,1,0.407,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/I%20Like%20Me%20Better/,58,13,0,0
 0.0102,Mask Off,Future,62,0.833,204600,0.434,0.0219,2,0.165,-8.795,1,0.431,150.062,4,Mask Off,7,0.286,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Mask%20Off/,22,27,0,0
-0.105,,,0,0.644,220839,0.531,0,0,0.0838,-6.591,1,0.0674,100.028,4,,10,0.516,1,FALSE,,,,,http://www.officialcharts.com/search/singles/nan/,0,0,0,0
 0.199,Redbone,Childish Gambino,3,0.743,326933,0.359,0.00611,1,0.137,-10.401,1,0.0794,160.083,4,Redbone,6,0.588,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Redbone/,51,17,0,0
 0.0744,SUBEME LA RADIO,Enrique Iglesias,62,0.684,208163,0.823,0,9,0.111,-3.297,0,0.0773,91.048,4,SUBEME LA RADIO,1,0.645,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/SUBEME%20LA%20RADIO/,0,0,0,0
 0.0245,Escápate Conmigo,Wisin,62,0.747,232787,0.864,4.46E-05,8,0.0853,-3.181,0,0.0599,92.028,4,Esc?pate Conmigo,1,0.746,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Esc?pate%20Conmigo/,0,0,0,0
