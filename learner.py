@@ -7,19 +7,15 @@ Created on Fri Mar  2 12:07:05 2018
 
 import os
 import pandas as pd
-import numpy as np
 from sklearn import svm
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn import tree
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
-import matplotlib.pyplot
-from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier
-from sklearn import linear_model
+
 
 
 class learner():
@@ -46,12 +42,31 @@ class learner():
         self.train_X, self.test_X, self.train_y, self.test_y = train_test_split(
                 self.data_X, self.data_y, test_size=0.33, random_state=42)      
     
-    def train(self):
+    def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
-        self.clf = tree.DecisionTreeClassifier(criterion = 'entropy')
+        self.selectedLearner(model)
         self.clf.fit(self.train_X,self.train_y)
         predicted = self.clf.predict(self.test_X)
         print(metrics.classification_report(self.test_y, predicted, digits=3))
         res = metrics.precision_recall_fscore_support(self.test_y, predicted)
         return res
     
+    def selectedLearner(self,model):
+        if model == 'DT':
+            print("Decision Tree Training")
+            self.clf = tree.DecisionTreeClassifier(criterion = 'entropy')
+        elif model == 'RF':
+            print("Random Forest Tree Training")
+            self.clf = RandomForestClassifier(criterion = 'entropy')
+        elif model == 'SVM':
+            print("SVM Training")
+            self.clf = svm.SVC()
+        elif model == 'LR':
+            print("Logistic Regression Training")
+            self.clf = LogisticRegression()
+        elif model == 'NB':
+            print("Naive Bayes Training")
+            self.clf = MultinomialNB()
+        elif model == 'MLP':
+            print("Neural Network Training")
+            self.clf = MLPClassifier()
