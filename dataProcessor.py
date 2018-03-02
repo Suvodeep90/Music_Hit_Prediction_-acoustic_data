@@ -1,0 +1,51 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Mar  2 11:57:58 2018
+
+@author: suvod
+"""
+
+import os
+import pandas as pd
+from sklearn import preprocessing
+
+class dataProcessor():
+    
+    def __init__(self):
+        self.header_ignore = "$"
+        self.normalization_ignore = "*"
+        self.class_s = "<"
+        self.class_label = None
+        self.dict_req_col = {}
+        self.headers = None
+        self.excel_data = None
+        self.dependent = None
+        self.df = pd.DataFrame(data = None)
+
+    def dataProcess(self, file, normalize = False):
+        self.excel_data = pd.read_csv(file)
+        self.headers = self.excel_data.columns.values.tolist()
+        for __header in self.headers:
+            if self.header_ignore in __header:
+                self.excel_data.drop([__header], axis = 1, inplace = True)
+            if self.normalization_ignore in __header:
+                self.df[__header] = self.excel_data[__header]
+                self.excel_data.drop([__header], axis = 1, inplace = True)
+            if self.class_s in __header:
+                self.class_label = __header
+        if normalize == True:
+            self.dependent = self.excel_data[self.class_label]
+            self.excel_data.drop([self.class_label], axis = 1, inplace = True)
+            self.excel_data = pd.concat([self.DataNormalize(self.excel_data),self.df], axis=1)
+            self.excel_data[self.class_label] = self.dependent
+        if self.excel_data.isnull().values.any():
+            print("There is blank cells, please check..")
+            print(self.excel_data.isnull().sum())
+        self.excel_data.to_pickle(os.path.join(self.data_path, "processed_data.pkl"))
+        self.excel_data.to_csv(os.path.join(self.data_path, "processed_data.csv"))
+        
+    def DataNormalize(self,df):
+        x = df.values #returns a numpy array
+        min_max_scaler = preprocessing.MinMaxScaler()
+        x_scaled = min_max_scaler.fit_transform(x)
+        return pd.DataFrame(x_scaled, columns = df.columns)
