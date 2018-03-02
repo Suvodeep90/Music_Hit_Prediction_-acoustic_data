@@ -6,9 +6,7 @@ Created on Fri Mar  2 11:51:43 2018
 """
 
 import os
-import pandasa as pd
-import numpy as np
-from __future__ import division, print_function
+import pandas as pd
 import dataProcessor
 import learner
 

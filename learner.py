@@ -16,11 +16,8 @@ from sklearn import tree
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
-import stats
-import feature_selector
 import matplotlib.pyplot
 from sklearn import preprocessing
-import SMOTE
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import linear_model
 
