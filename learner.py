@@ -46,7 +46,7 @@ class learner():
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
         self.selectedLearner(model)
-        self.clf.fit(self.train_X,self.train_y,50,1200,True)
+        self.clf.fit(self.train_X,self.train_y,2,10,True)
         predicted = self.clf.predict(self.test_X)
         print(metrics.classification_report(self.test_y, predicted, digits=3))
         res = metrics.precision_recall_fscore_support(self.test_y, predicted)
