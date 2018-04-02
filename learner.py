@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
+import neural_network
 
 
 
@@ -45,7 +46,7 @@ class learner():
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
         self.selectedLearner(model)
-        self.clf.fit(self.train_X,self.train_y)
+        self.clf.fit(self.train_X,self.train_y,50,1200,True)
         predicted = self.clf.predict(self.test_X)
         print(metrics.classification_report(self.test_y, predicted, digits=3))
         res = metrics.precision_recall_fscore_support(self.test_y, predicted)
@@ -60,7 +61,7 @@ class learner():
             self.clf = RandomForestClassifier(criterion = 'entropy')
         elif model == 'SVM':
             print("SVM Training")
-            self.clf = svm.SVC()
+            self.clf = svm.SVC(kernel = 'linear')
         elif model == 'LR':
             print("Logistic Regression Training")
             self.clf = LogisticRegression()
@@ -69,4 +70,7 @@ class learner():
             self.clf = MultinomialNB()
         elif model == 'MLP':
             print("Neural Network Training")
-            self.clf = MLPClassifier()
+            self.clf = MLPClassifier(activation = 'relu')
+        elif model == 'NN':
+            print("Our Neural Network Training")
+            self.clf = neural_network.NNClassifier()

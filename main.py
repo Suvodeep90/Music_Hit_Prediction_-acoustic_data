@@ -19,5 +19,5 @@ if __name__ == "__main__":
     dProcessor = dataProcessor.dataProcessor()
     dProcessor.dataProcess(file_path,data_path,True,True,False)
     model = learner.learner()
-    model.train('DT')
+    model.train('NN')
     
