@@ -16,6 +16,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 import neural_network
+import delete
 
 
 
@@ -46,7 +47,7 @@ class learner():
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
         self.selectedLearner(model)
-        self.clf.fit(self.train_X,self.train_y,2,10,True)
+        self.clf.fit(self.train_X,self.train_y,2,200,True)
         predicted = self.clf.predict(self.test_X)
         print(metrics.classification_report(self.test_y, predicted, digits=3))
         res = metrics.precision_recall_fscore_support(self.test_y, predicted)

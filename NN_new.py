@@ -8,6 +8,7 @@ Created on Mon Apr  2 08:43:52 2018
 import numpy as np
 import pandas as pd
 import pdb
+import math
 
 # Implemented following http://www.wildml.com/2015/09/implementing-a-neural-network-from-scratch/
 
@@ -54,6 +55,7 @@ class NNClassifier:
     # iterations: number of iterations through training data for gradient descent
     # print_loss: (boolean) prints loss every 1000 iterations
     def fit(self, X, y, hidden_layer_size, iterations, print_loss):
+        y = y.T
         self.X = X
         self.y = y
         self.train_size = X.shape[0]   # Assuming dataframe with rows as number of samples
@@ -64,6 +66,7 @@ class NNClassifier:
         # Randomly initialize parameters to random values. These will be learned.
         np.random.seed(0)
         #print(self.train_size,self.num_features,self.hidden_layer_size,self.output_dim)
+        print(self.X)
         self.W1 = np.random.randn(self.num_features, self.hidden_layer_size) / np.sqrt(self.train_size)
         self.b1 = np.zeros((self.hidden_layer_size, self.train_size))
         self.W2 = np.random.randn(self.hidden_layer_size, self.output_dim) / np.sqrt(self.hidden_layer_size)
@@ -79,32 +82,36 @@ class NNClassifier:
             z2 = a1.dot(self.W2) + self.b2.transpose()
             exp_scores = np.exp(z2)
             probs = exp_scores.T / np.sum(exp_scores, axis=1)
-
             # Backpropagation:
-            delta3 = probs
-            delta3 -= 1
-            dW2 = a1.T.dot(delta3.T)
-            db2 = np.sum(delta3, axis=0)
-            delta2 = delta3.T.dot(self.W2.T) * (1 - np.power(a1, 2))
-            pdb.set_trace()
-            dW1 = np.dot(X.T, delta2)
-            db1 = np.sum(delta2, axis=1)
+            delta3 = np.array(probs).T
+            
+            delta3[range(len(y)),y.astype(int)] -= 1
+            #delta3 = pd.DataFrame(delta3)
+            
+            dW2 = a1.T.dot(delta3)
+            db2 = np.sum(delta3, axis=1)
+            delta2 = delta3.dot(self.W2.T) * (1 - np.power(a1, 2))
+            #pdb.set_trace()
+            print(X.shape,delta2.shape)
+            dW1 = X.T.dot(delta2)
+            db1 = np.sum(delta2.T, axis=1)
             # Adding regularization terms:
             dW2 += self.reg_lambda * self.W2
             dW1 += self.reg_lambda * self.W1
-            print(dW1)
+            #print(dW1)
             # Parameter updates:
             self.W1 += -self.epsilon * dW1
 #            print(self.W1)
             #print((pd.Series(self.b1[0]) + self.epsilon * db1).shape)
-            self.b1[0] = (self.b1[0]) + self.epsilon * db1
+            self.b1.T[0] = (self.b1.T[0]) + self.epsilon * db1
             #print(np.unique(self.b1))
+            #pdb.set_trace()
             self.W2 += -self.epsilon * dW2
+            #self.b2.T[0] = (self.b2.T[0]) + self.epsilon * db2
             self.b2[0] = (self.b2[0]) + self.epsilon * db2
-
             if print_loss and i % 1000 == 0:
                 print("Loss after iteration %i: %f" % (i,i))
-
+        #pdb.set_trace()
         return self
 
     # Untested - will need to change several matrix operations for this part to compile.
@@ -113,16 +120,17 @@ class NNClassifier:
         W1, b1, W2, b2 = self.W1, self.b1, self.W2, self.b2
         b1 = np.zeros((self.hidden_layer_size, X.shape[0]))
         b2 = np.zeros((self.output_dim, X.shape[0]))
+        #pdb.traceback()
         # Forward propagation
+        print(X.shape,W1.shape,b1.shape)
         z1 = X.dot(W1) + b1.transpose()
         a1 = self.relu_activation(z1)
         z2 = a1.dot(W2) + b2.transpose()
         exp_scores = np.exp(z2)
         probs = exp_scores / np.sum(exp_scores, axis=0)
-        return np.argmax(probs, axis=1)
+        return np.argmax(np.array(probs),axis = 1)
 
     def relu_activation(self,data_array):
-        print(data_array,np.maximum(data_array, 0))
         return np.maximum(data_array, 0)
     def tanh_activation(self,data_array):
-        return np.tanh(data_array, 0)
+        return np.tanh(data_array)
