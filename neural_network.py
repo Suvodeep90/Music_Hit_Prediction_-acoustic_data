@@ -11,8 +11,6 @@ import pdb
 import math
 import tensorflow as tf
 
-# Implemented following http://www.wildml.com/2015/09/implementing-a-neural-network-from-scratch/
-
 
 class NNClassifier:
 
@@ -29,8 +27,8 @@ class NNClassifier:
         self.output_dim = None
 
         # Gradient Descent Parameters
-        self.epsilon = 0.01       # Learning Rate
-        self.reg_lambda = 0.01      # Regularization Strength
+        self.epsilon = 0.001       # Learning Rate
+        self.reg_lambda = 0.001      # Regularization Strength
 
     def calculate_loss(self):
         W1, b1, W2, b2 = self.W1, self.b1, self.W2, self.b2
@@ -40,7 +38,7 @@ class NNClassifier:
         a1 = self.relu_activation(z1)
         z2 = self.W2.T.dot(a1) + self.b2
         exp_scores = np.exp(z2)
-        probs = exp_scores.T / np.sum(exp_scores, axis=1)
+        probs = exp_scores.T / np.sum(exp_scores, axis=1,keepdims = True)
 
         # Calculate loss
         correct_logprobs = -np.log(probs)
@@ -98,10 +96,11 @@ class NNClassifier:
             exp_scores = np.exp(z2)
             probs = exp_scores.T / np.sum(exp_scores, axis=1)
             # Backpropagation:
-            print(self.W1)
             delta3 = np.array(probs)
             delta3[range(len(y)),y.astype(int)] -= 1
+            print(a1)
             dW2 = delta3.T.dot(a1.T)
+            print(dW2)
             db2 = np.sum(delta3, axis=1)
             delta2 = delta3.dot(self.W2).T * (1 - np.power(a1, 2))
             dW1 = X.T.dot(delta2.T)
@@ -113,10 +112,19 @@ class NNClassifier:
             # Parameter updates:
             self.W1 += -self.epsilon * dW1
             self.b1[0] = (self.b1[0]) + self.epsilon * db1
+            print(self.b1[0])
             self.W2 += -self.epsilon * dW2
             self.b2[0] = (self.b2[0]) + self.epsilon * db2
             if print_loss and i % 100 == 0:
                 print("Loss after iteration %i: %f" % (i,i))
+#            print("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+#            print("weights Size:",self.W1.shape,self.W2.shape)
+#            print("weight update Size:",dW1.shape,dW2.shape)
+#            print("Probability Shape:", probs.shape)
+#            print("delta Shape:",delta2.shape,delta3.shape)
+#            print("Bias update Size:",db1.shape,db2.shape)
+#            print("Bias Size:",self.b1.shape,self.b2.shape)
+#            print("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
         #pdb.set_trace()
         return self
 
@@ -133,7 +141,7 @@ class NNClassifier:
         a1 = self.relu_activation(z1)
         z2 = self.W2.dot(a1) + b2
         exp_scores = np.exp(z2)
-        probs = exp_scores / np.sum(exp_scores, axis=0)
+        probs = exp_scores / np.sum(exp_scores, axis=1,keepdims = True)
         print(probs.shape)
         return np.argmax(np.array(probs.T),axis = 1)
 

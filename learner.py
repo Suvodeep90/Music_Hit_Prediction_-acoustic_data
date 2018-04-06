@@ -16,7 +16,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 import neural_network
-import delete
+import smote
 
 
 
@@ -25,6 +25,7 @@ class learner():
     def __init__(self):
         self.data_X = None
         self.data_y = None
+        self.doSmt = True
         self.clf = None
         self.data_loc = "data"
         self.class_s = "<"
@@ -47,7 +48,9 @@ class learner():
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
         self.selectedLearner(model)
-        self.clf.fit(self.train_X,self.train_y,2,200,True)
+        if self.doSmt:
+            self.doSmote()
+        self.clf.fit(self.train_X,self.train_y,20,200,True)
         predicted = self.clf.predict(self.test_X)
         print(metrics.classification_report(self.test_y, predicted, digits=3))
         res = metrics.precision_recall_fscore_support(self.test_y, predicted)
@@ -75,3 +78,16 @@ class learner():
         elif model == 'NN':
             print("Our Neural Network Training")
             self.clf = neural_network.NNClassifier()
+            
+
+    def doSmote(self):
+        df = pd.concat([self.train_X,self.train_y], axis = 1)
+        columnNames = self.data.columns.values.tolist()
+        columnNames.append(self.class_label)
+        smt = smote.smote(df,5)
+        
+        self.data = smt.run()
+        self.data.columns = columnNames
+        self.train_y = self.data[self.class_label]
+        self.data.drop([self.class_label], axis = 1, inplace = True)
+        self.train_X = self.data
