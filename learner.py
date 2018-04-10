@@ -8,7 +8,7 @@ Created on Fri Mar  2 12:07:05 2018
 import os
 import pandas as pd
 from sklearn import svm
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB,GaussianNB,BernoulliNB
 from sklearn.neural_network import MLPClassifier
 from sklearn import tree
 from sklearn.model_selection import train_test_split
@@ -17,6 +17,7 @@ from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 import neural_network
 import smote
+from sklearn.ensemble import AdaBoostClassifier
 
 
 
@@ -25,7 +26,7 @@ class learner():
     def __init__(self):
         self.data_X = None
         self.data_y = None
-        self.doSmt = True
+        self.doSmt = False
         self.clf = None
         self.data_loc = "data"
         self.class_s = "<"
@@ -48,11 +49,14 @@ class learner():
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
         self.selectedLearner(model)
+        print(self.test_X.shape)
+        print(self.train_X.shape)
         if self.doSmt:
             self.doSmote()
-        self.clf.fit(self.train_X,self.train_y,20,200,True)
+        self.clf.fit(self.train_X,self.train_y)
         predicted = self.clf.predict(self.test_X)
         print(metrics.classification_report(self.test_y, predicted, digits=3))
+        print(metrics.confusion_matrix(self.test_y, predicted))
         res = metrics.precision_recall_fscore_support(self.test_y, predicted)
         return res
     
@@ -71,21 +75,23 @@ class learner():
             self.clf = LogisticRegression()
         elif model == 'NB':
             print("Naive Bayes Training")
-            self.clf = MultinomialNB()
+            self.clf = GaussianNB()
         elif model == 'MLP':
             print("Neural Network Training")
-            self.clf = MLPClassifier(activation = 'relu')
+            self.clf = MLPClassifier(activation = 'relu', max_iter=1000)
         elif model == 'NN':
             print("Our Neural Network Training")
             self.clf = neural_network.NNClassifier()
+        elif model == 'ADA':
+            print("Our Neural Network Training")
+            self.clf = AdaBoostClassifier()
             
 
     def doSmote(self):
         df = pd.concat([self.train_X,self.train_y], axis = 1)
         columnNames = self.data.columns.values.tolist()
         columnNames.append(self.class_label)
-        smt = smote.smote(df,5)
-        
+        smt = smote.smote(df,5)        
         self.data = smt.run()
         self.data.columns = columnNames
         self.train_y = self.data[self.class_label]

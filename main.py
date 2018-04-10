@@ -12,12 +12,12 @@ import learner
 
 if __name__ == "__main__":
     data_loc = 'data'
-    dataSet = "songDataSet.csv"
+    dataSet = "unique_songDataSet.csv"
     cwd = os.getcwd()
     data_path = os.path.join(cwd, data_loc)
     file_path = os.path.join(data_path, dataSet)
     dProcessor = dataProcessor.dataProcessor()
     dProcessor.dataProcess(file_path,data_path,True,True,False)
     model = learner.learner()
-    model.train('NN')
+    model.train('ADA')
     

@@ -62,4 +62,4 @@ class dataProcessor():
         return imp.fit_transform(df)
     
     def featureSelction(self,df):
-        return featureSelector.consistency_subset(df)
+        return featureSelector.gain_rank(df)

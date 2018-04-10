@@ -98,9 +98,7 @@ class NNClassifier:
             # Backpropagation:
             delta3 = np.array(probs)
             delta3[range(len(y)),y.astype(int)] -= 1
-            print(a1)
             dW2 = delta3.T.dot(a1.T)
-            print(dW2)
             db2 = np.sum(delta3, axis=1)
             delta2 = delta3.dot(self.W2).T * (1 - np.power(a1, 2))
             dW1 = X.T.dot(delta2.T)
@@ -112,7 +110,6 @@ class NNClassifier:
             # Parameter updates:
             self.W1 += -self.epsilon * dW1
             self.b1[0] = (self.b1[0]) + self.epsilon * db1
-            print(self.b1[0])
             self.W2 += -self.epsilon * dW2
             self.b2[0] = (self.b2[0]) + self.epsilon * db2
             if print_loss and i % 100 == 0:
