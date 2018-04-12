@@ -19,7 +19,11 @@ We used several techniques to handle:
 
 ### Algorithms Used ###
 The algorithms we used from built-in libraries are:
-* SVM, Naive Bayes, Logistic Regression, Decision Trees, Random Forests
+* SVM
+* Naive Bayes
+* Logistic Regression
+* Decision Trees
+* Random Forests
 
 We also implemented the following algorithms from scratch:
 * Neural Network
