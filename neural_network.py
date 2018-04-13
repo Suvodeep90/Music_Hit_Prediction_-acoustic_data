@@ -6,7 +6,6 @@ Created on Mon Apr  2 08:43:52 2018
 """
 
 import numpy as np
-import pandas as pd
 import pdb
 import math
 import tensorflow as tf
