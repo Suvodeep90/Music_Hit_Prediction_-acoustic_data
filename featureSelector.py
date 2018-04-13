@@ -80,11 +80,13 @@ def consistency_subset(df):
         if not sum(selects): continue
         fs = [features[i] for i, v in enumerate(selects) if v]
         score = consistency(df[fs], df[target])
+        print(fs)
         if score > best[0]:
             best = [score, fs]
             lst_improve_at = time.time()
-
+    
     selected_features = best[1] + [target]
+    print(selected_features)
     return df[selected_features]
 
 

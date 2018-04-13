@@ -15,7 +15,7 @@ from sklearn.neighbors import NearestNeighbors as NN
 
 
 class smote(object):
-  def __init__(self, pd_data, neighbor=5, up_to_num=[]):
+  def __init__(self, pd_data, neighbor=10, up_to_num=[]):
     self.set_data(pd_data)
     self.neighbor = neighbor
     self.up_to_max = False
@@ -61,7 +61,6 @@ class smote(object):
 
     total_data = self.data.values.tolist()
     labelCont = Counter(self.data[self.data.columns[-1]].values)
-    print(type(labelCont))
     majority_num = max(labelCont.values())
     for label, num in labelCont.items():
       if num < majority_num:

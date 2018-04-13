@@ -9,15 +9,17 @@ import os
 import pandas as pd
 import dataProcessor
 import learner
+import warnings
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore")
     data_loc = 'data'
     dataSet = "unique_songDataSet.csv"
     cwd = os.getcwd()
     data_path = os.path.join(cwd, data_loc)
     file_path = os.path.join(data_path, dataSet)
     dProcessor = dataProcessor.dataProcessor()
-    dProcessor.dataProcess(file_path,data_path,True,True,False)
+    dProcessor.dataProcess(file_path,data_path,True,True,True)
     model = learner.learner()
-    model.train('ADA')
+    model.train('NBL2')
     
