@@ -37,7 +37,7 @@ class NNClassifier:
         a1 = self.relu_activation(z1)
         z2 = self.W2.T.dot(a1) + self.b2
         exp_scores = np.exp(z2)
-        probs = exp_scores.T / np.sum(exp_scores, axis=1,keepdims = True)
+        probs = exp_scores.T / np.sum(exp_scores, axis=1, keepdims=True)
 
         # Calculate loss
         correct_logprobs = -np.log(probs)
@@ -53,28 +53,28 @@ class NNClassifier:
     # iterations: number of iterations through training data for gradient descent
     # print_loss: (boolean) prints loss every 1000 iterations
     def fit(self, X, y, hidden_layer_size, iterations, print_loss):
-        N = 1965
-        Y = y
+        N = len(X)      # Number of samples
+        Y = np.array(y)
         y = []
         self.X = np.array(X)
         print(Y)
         for i in range(len(Y)):
             if Y[i] == 0:
-                y.append([1,0])
+                y.append([1, 0])
             else:
-                y.append([0,1])
+                y.append([0, 1])
         self.y = np.array(y)
         self.train_size = X.shape[0]   # Assuming dataframe with rows as number of samples
         self.num_features = X.shape[1]
         self.hidden_layer_size = hidden_layer_size
         self.output_dim = 2
         losses = []
-        accuracies=[]
+        accuracies = []
 
         # Randomly initialize parameters to random values. These will be learned.
         np.random.seed(0)
         tf.reset_default_graph()
-        w1 = tf.get_variable("w1", shape=[self.num_features, self.hidden_layer_size], initializer=tf.contrib.layers.xavier_initializer(uniform=True,seed=None,dtype=tf.float64))
+        w1 = tf.get_variable("w1", shape=[self.num_features, self.hidden_layer_size], initializer=tf.contrib.layers.xavier_initializer(uniform=True, seed=None, dtype=tf.float64))
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             self.W1 = (sess.run(w1))
@@ -104,15 +104,14 @@ class NNClassifier:
             a1 = self.sigmoid(z1)
             z2 = np.matmul(a1,self.W2) #+ self.b2.T
             exp_scores = self.sigmoid(z2)
-#            probs = np.exp(exp_scores)/np.sum(np.exp(exp_scores), axis=1, keepdims=True)
+            # probs = np.exp(exp_scores)/np.sum(np.exp(exp_scores), axis=1, keepdims=True)
             a2 = exp_scores
             
             L = np.square(self.y[index]-a2).sum()/(2*N) + self.reg_lambda*(np.square(self.W1).sum()+np.square(self.W2).sum())/(2*N)
 
-            losses.append([i,L])
-            
-            
-            #Back Propagation
+            losses.append([i, L])
+
+            # Back Propagation
             delta3 = -(self.y[index] - a2)
             dh2_dz2 = self.sigmoid(a2, first_derivative=True) 
             db2 = a1
@@ -142,10 +141,6 @@ class NNClassifier:
     # Untested - will need to change several matrix operations for this part to compile.
     # Should resemble other forward propagation code.
     def predict(self, X):
-        W1, b1, W2, b2 = self.W1, self.b1, self.W2, self.b2
-        b1 = np.zeros((self.hidden_layer_size, X.shape[0]))
-        b2 = np.zeros((self.output_dim, X.shape[0]))
-        #pdb.traceback()
         # Forward propagation
         z1 = np.matmul(X, self.W1)# + self.b1.T
         a1 = self.sigmoid(z1)
@@ -157,8 +152,10 @@ class NNClassifier:
 
     def relu_activation(self,data_array):
         return np.maximum(data_array, 0)
+
     def tanh_activation(self,data_array):
         return np.tanh(data_array)
+
     def sigmoid(self,z, first_derivative=False):
         if first_derivative:
             return z*(1.0-z)
@@ -166,8 +163,9 @@ class NNClassifier:
 
     def tanh(self, z, first_derivative=True):
         if first_derivative:
-            return (1.0-z*z)
+            return 1.0-z*z
         return (1.0-np.exp(-z))/(1.0+np.exp(-z))
+
     def inference(self,data, weights):
         a1 = self.sigmoid(np.matmul(data, weights[0]))
         logits = np.matmul(a1, weights[1])
