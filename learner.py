@@ -50,7 +50,7 @@ class learner():
                 self.class_label = __header
         self.columns = self.data.columns.values.tolist()
         self.data_y = self.data[self.class_label]
-        self.data.drop([self.class_label], axis = 1, inplace = True)
+        self.data.drop([self.class_label], axis=1, inplace = True)
         self.data_X = self.data
         self.train_X, self.test_X, self.train_y, self.test_y = train_test_split(
                 self.data_X, self.data_y, test_size=0.33, random_state=38)      
@@ -63,24 +63,18 @@ class learner():
             
         #Layer 1
         if model == 'NBL2':
-            res = self.model.fit_predict( self.clf,self.train_X, self.train_y, self.test_X, self.test_y,self.class_label)
+            res = self.model.fit_predict( self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
         elif model == 'NBL3':
             res = self.model.fit_predict( self.clf,self.train_X, self.train_y, self.test_X, self.test_y,self.class_label)
-        elif model == 'NN':
-            self.clf.fit(np.array(self.train_X),np.array(self.train_y),10,100000,True)
-            predict = self.clf.predict(np.array(self.test_X))
-            print(metrics.classification_report(self.test_y, predict, digits=3))
-            print(metrics.confusion_matrix(self.test_y, predict))
-            res = metrics.precision_recall_fscore_support(self.test_y, predict)
         else:
-            self.clf.fit(self.train_X,self.train_y)
+            self.clf.fit(self.train_X, self.train_y)
             predict = self.clf.predict(self.test_X)
             print(metrics.classification_report(self.test_y, predict, digits=3))
             print(metrics.confusion_matrix(self.test_y, predict))
             res = metrics.precision_recall_fscore_support(self.test_y, predict)
         return res
     
-    def selectedLearner(self,model):
+    def selectedLearner(self, model):
         if model == 'DT':
             print("Decision Tree Training")
             self.clf = tree.DecisionTreeClassifier(criterion = 'entropy')
@@ -98,12 +92,12 @@ class learner():
             self.clf = GaussianNB()
         elif model == 'MLP':
             print("Neural Network Training")
-            self.clf = MLPClassifier(hidden_layer_sizes  = 500, activation = 'tanh',learning_rate = 'adaptive' ,max_iter=15000)
+            self.clf = MLPClassifier(hidden_layer_sizes=500, activation='tanh', learning_rate='adaptive', max_iter=15000)
         elif model == 'NN':
             print("Our Neural Network Training")
             self.clf = neural_network.NNClassifier()
         elif model == 'ADA':
-            print("Our Neural Network Training")
+            print("AdaBoost Training")
             self.clf = AdaBoostClassifier()
         elif model == 'NBL2':
             print("NBL2 model Training")
