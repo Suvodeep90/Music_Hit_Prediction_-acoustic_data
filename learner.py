@@ -66,6 +66,12 @@ class learner():
             res = self.model.fit_predict( self.clf,self.train_X, self.train_y, self.test_X, self.test_y,self.class_label)
         elif model == 'NBL3':
             res = self.model.fit_predict( self.clf,self.train_X, self.train_y, self.test_X, self.test_y,self.class_label)
+        elif model == 'NN':
+            self.clf.fit(np.array(self.train_X),np.array(self.train_y),10,100000,True)
+            predict = self.clf.predict(np.array(self.test_X))
+            print(metrics.classification_report(self.test_y, predict, digits=3))
+            print(metrics.confusion_matrix(self.test_y, predict))
+            res = metrics.precision_recall_fscore_support(self.test_y, predict)
         else:
             self.clf.fit(self.train_X,self.train_y)
             predict = self.clf.predict(self.test_X)

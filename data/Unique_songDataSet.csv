@@ -1,4 +1,4 @@
-acousticness,$album,$artist,available_markets,danceability,duration_ms,energy,instrumentalness,key,liveness,loudness,mode,speechiness,tempo,time_signature,$track,track_number,valence,$y,featuring,remix,with,radio_edit,ost,$link,$Peak_Pos,$WoC,<Phit,$Thit
+acousticness,$album,$artist,available_markets,danceability,duration_ms,energy,instrumentalness,key,liveness,loudness,mode,speechiness,tempo,time_signature,$track,track_number,valence,$y,$featuring,$remix,$with,$radio_edit,$ost,$link,$Peak_Pos,$WoC,<Phit,$Thit
 0.165,Starboy,Weeknd,59,0.681,230453,0.594,3.49E-06,7,0.134,-7.028,1,0.282,186.054,4,Starboy,1,0.51,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Starboy/,2,38,1,1
 0.414,Closer,Chainsmokers,62,0.748,244960,0.524,0,8,0.111,-5.599,1,0.0338,95.01,4,Closer,1,0.635,1,FALSE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Closer/,1,47,1,1
 0.406,Rockabye (feat. Sean Paul & Anne-Marie),Clean Bandit,62,0.72,251088,0.763,0,9,0.18,-4.068,0,0.0523,101.965,4,Rockabye (feat. Sean Paul & Anne-Marie),1,0.748,1,TRUE,FALSE,FALSE,FALSE,FALSE,http://www.officialcharts.com/search/singles/Rockabye/,1,41,1,1
