@@ -24,7 +24,7 @@ class dataProcessor():
         self.dependent = None
         self.df = pd.DataFrame(data = None)
 
-    def dataProcess(self, file, data_path, normalize = False, missingValueTreatment = False, featureSelect = False):
+    def dataProcess(self, file, data_path, normalize=False, missingValueTreatment=False, featureSelect=False):
         self.excel_data = pd.read_csv(file)
         self.headers = self.excel_data.columns.values.tolist()
         for __header in self.headers:
