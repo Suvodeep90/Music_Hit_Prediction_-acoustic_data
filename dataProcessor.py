@@ -9,6 +9,7 @@ import os
 import pandas as pd
 from sklearn import preprocessing
 import featureSelector
+import learner
 
 class dataProcessor():
     
@@ -22,10 +23,13 @@ class dataProcessor():
         self.processed_headers = None
         self.excel_data = None
         self.dependent = None
+        self.model = None
+        self.clf = None
         self.df = pd.DataFrame(data = None)
 
-    def dataProcess(self, file, data_path, normalize = False, missingValueTreatment = False, featureSelect = False):
+    def dataProcess(self, file, data_path, model,normalize = False, missingValueTreatment = False, featureSelect = False):
         self.excel_data = pd.read_csv(file)
+        self.model = model
         self.headers = self.excel_data.columns.values.tolist()
         for __header in self.headers:
             if self.header_ignore in __header:
@@ -44,6 +48,8 @@ class dataProcessor():
             self.excel_data = pd.concat([self.DataNormalize(self.excel_data),self.df], axis=1)
             self.excel_data[self.class_label] = self.dependent
         if featureSelect:
+            model = learner.learner()
+            self.clf = model.selectedLearner(self.model)
             self.excel_data = self.featureSelction(self.excel_data)
         if self.excel_data.isnull().values.any():
             print("There is blank cells, please check..")
@@ -62,4 +68,4 @@ class dataProcessor():
         return imp.fit_transform(df)
     
     def featureSelction(self,df):
-        return featureSelector.consistency_subset(df)
+        return featureSelector.featureSelection(df,self.clf).recursive_feature_selector()

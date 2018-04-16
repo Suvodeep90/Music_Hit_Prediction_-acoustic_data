@@ -13,80 +13,77 @@ import scipy as sc
 import random
 import pdb
 import time
+from sklearn.feature_selection import SelectKBest,RFECV
+from sklearn.model_selection import StratifiedKFold
 
 
-def _ent(data):
-    p_data = data.value_counts() / len(data)  # calculates the probabilities
-    entropy = sc.stats.entropy(p_data)  # input probabilities to get the entropy
-    return entropy
-
-
-def gain_rank(df):
-    H_C = _ent(df.iloc[:, -1])
-    weights = pd.DataFrame(data=np.zeros([1, df.shape[1] - 1]), columns=df.columns[:-1])
-
-    types_C = set(df.iloc[:, -1])
-    target = df.columns[-1]
-    for a_i, a in enumerate(df.columns[:-1]):  # for each attribute a
-        for typea in set(df.loc[:, a]):  # each class of attribute a
-            selected_a = df[df[a] == typea]
-            sub = 0
-            for typec in types_C:
-                p_c_a = selected_a[selected_a[target] == typec].shape[0] / selected_a.shape[0]
-                if p_c_a == 0:
-                    continue
-                sub += p_c_a * math.log(p_c_a, 2)
-            weights.loc[0, a] += -1 * selected_a.shape[0] / df.shape[0] * sub
-
-    weights = H_C - weights
-    weights[df.columns[-1]] = 1
-    weights = weights.append([weights] * (df.shape[0] - 1), ignore_index=False)
-    weights.index = df.index
-
-    res = weights * df
-    return res
-
-
-
-
-def consistency_subset(df):
-
-    def consistency(sdf, classes):
-        sdf = sdf.join(classes)
-        uniques = sdf.drop_duplicates()
-        target = classes.name
-
-        subsum = 0
-
-        for i in range(uniques.shape[0] - 1):
-            row = uniques.iloc[i]
-            matches = sdf[sdf == row].dropna()
-            if matches.shape[0] <= 1: continue
-            D = matches.shape[0]
-            M = matches[matches[target] == float(matches.mode()[target])].shape[0]
-            subsum += (D - M)
-
-        return 1 - subsum / sdf.shape[0]
-
-    features = df.columns[:-1]
-    target = df.columns[-1]
-
-    hc_starts_at = time.time()
-    lst_improve_at = time.time()
-    best = [0, None]
-    while time.time() - lst_improve_at < 1 or time.time() - hc_starts_at < 5:
-        # during of random_config search -> at most 5 seconds. if no improve by 1 second, then stop
-        selects = [random.choice([0, 1]) for _ in range(len(features))]
-        if not sum(selects): continue
-        fs = [features[i] for i, v in enumerate(selects) if v]
-        score = consistency(df[fs], df[target])
-        print(fs)
-        if score > best[0]:
-            best = [score, fs]
-            lst_improve_at = time.time()
+class featureSelection():
     
-    selected_features = best[1] + [target]
-    print(selected_features)
-    return df[selected_features]
+    def __init__(self, data, clf):
+        self.feature_clf = None
+        self.data = data
+        self.class_label = self.data.columns[-1]
+        self.columns = self.data.columns[:-1]
+        self.feature_subset = None
+        self.selected_feature = None
+        self.train_X = None
+        self.train_y = None
+        self.clf = clf
+        self.set_data()
+        
+    
+    def set_data(self):
+        self.train_y = self.data[self.class_label]
+        self.train_X = self.data[self.columns]
+        
 
+    def score(self):
+        data_subset = self.data[self.feature_subset].join(self.data[self.class_label])
+        uniques_data_points = data_subset.drop_duplicates()    
+        subsum = 0
+        for i in range(uniques_data_points.shape[0] - 1):
+            row = uniques_data_points.iloc[i]
+            matches = data_subset[data_subset == row].dropna()
+            if matches.shape[0] <= 1:
+                continue
+            D = matches.shape[0]
+            label = matches[self.class_label] == float(matches.mode()[self.class_label])
+            M = matches[label].shape[0]
+            subsum += (D - M)
+        return 1 - subsum / data_subset.shape[0]
 
+    def consistency_subset(self):
+        starts_time = time.time()
+        last_improve_at = time.time()
+        best = [0, None]
+        while time.time() - last_improve_at < 5 or time.time() - starts_time < 10:
+            rand_selected_attr = [random.choice([0, 1]) for _ in range(len(self.columns))]
+            if not sum(rand_selected_attr):
+                continue
+            self.feature_subset = [self.columns[i] for i, v in enumerate(rand_selected_attr) if v]
+            score = self.score()
+            if score > best[0]:
+                best = [score, self.feature_subset]
+                last_improve_at = time.time()
+        
+        self.selected_feature = best[1] + [self.class_label]
+        return self.data[self.selected_feature]
+    
+    def selectkBest(self):
+        self.feature_clf = SelectKBest()
+        self.feature_clf.fit(self.train_X,self.train_y)
+        self.selected_feature = self.columns[self.feature_clf.get_support(indices=True)]
+        self.feature_subset = self.data[self.selected_feature]
+        self.train_y = pd.DataFrame(self.train_y)
+        self.feature_subset = self.feature_subset.join(self.train_y)
+        return self.feature_subset
+    
+    def recursive_feature_selector(self):
+        self.feature_clf = RFECV(estimator=self.clf, step=1, cv=StratifiedKFold(2),
+              scoring='f1_weighted')
+        self.feature_clf.fit(self.train_X,self.train_y)
+        self.selected_feature = self.columns[self.feature_clf.get_support(indices=True)]
+        self.feature_subset = self.data[self.selected_feature]
+        self.train_y = pd.DataFrame(self.train_y)
+        self.feature_subset = self.feature_subset.join(self.train_y)
+        return self.feature_subset

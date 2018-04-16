@@ -18,8 +18,9 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     data_path = os.path.join(cwd, data_loc)
     file_path = os.path.join(data_path, dataSet)
+    algo = 'RF'
     dProcessor = dataProcessor.dataProcessor()
-    dProcessor.dataProcess(file_path, data_path, True, True, True)
+    dProcessor.dataProcess(file_path, data_path, algo,True, True, True)
     model = learner.learner()
-    model.train('NN')
+    model.train("NB")
     

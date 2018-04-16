@@ -25,8 +25,8 @@ from sklearn.ensemble import RandomForestClassifier
 import neural_network
 import smote
 from sklearn.ensemble import AdaBoostClassifier
-import numpy as np
-
+import numpy as np 
+from sklearn.neighbors import KNeighborsClassifier
 
 
 class learner():
@@ -86,7 +86,7 @@ class learner():
             self.clf = tree.DecisionTreeClassifier(criterion = 'entropy')
         elif model == 'RF':
             print("Random Forest Tree Training")
-            self.clf = RandomForestClassifier(criterion = 'entropy')
+            self.clf = RandomForestClassifier(n_estimators = 2000, criterion = 'entropy')
         elif model == 'SVM':
             print("SVM Training")
             self.clf = svm.SVC(kernel = 'linear')
@@ -105,6 +105,9 @@ class learner():
         elif model == 'ADA':
             print("AdaBoost Training")
             self.clf = AdaBoostClassifier()
+        elif model == 'KNN':
+            print("AdaBoost Training")
+            self.clf = KNeighborsClassifier(n_neighbors = 10)
         elif model == 'NBL2':
             print("NBL2 model Training")
             self.model = NBL2()
@@ -113,13 +116,14 @@ class learner():
             print("NBL2 model Training")
             self.model = NBL3()
             self.clf = GaussianNB()
+        return self.clf
 
     def doSmote(self):
         df = pd.concat([self.train_X,self.train_y], axis = 1)
         columnNames = self.data.columns.values.tolist()
         columnNames.append(self.class_label)
         smt = smote.smote(df,5)        
-        self.data = smt.run()
+        self.data = smt.fit_transform()
         self.data.columns = columnNames
         self.train_y = self.data[self.class_label]
         self.data.drop([self.class_label], axis = 1, inplace = True)
