@@ -53,7 +53,7 @@ class NNClassifier:
     # iterations: number of iterations through training data for gradient descent
     # print_loss: (boolean) prints loss every 1000 iterations
     def fit(self, X, y, hidden_layer_size, iterations, print_loss):
-        N = len(X)      # Number of samples
+        N = len(X)
         Y = np.array(y)
         y = []
         self.X = np.array(X)
@@ -90,7 +90,6 @@ class NNClassifier:
             self.W2 = (sess.run(w2))
         tf.reset_default_graph()
         wb2 = tf.get_variable("wb2", shape=[self.output_dim, 1], initializer=tf.contrib.layers.xavier_initializer(uniform=True,seed=None,dtype=tf.float64))
-        #print(self.train_size,self.num_features,self.hidden_layer_size,self.output_dim)
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             self.b2 = (sess.run(wb2))
@@ -99,12 +98,10 @@ class NNClassifier:
             
             index = np.arange(self.X.shape[0])[:N]
             # Forward propagation:
-            #pdb.set_trace()
-            z1 = np.matmul(self.X, self.W1) #+ self.b1.T
+            z1 = np.matmul(self.X, self.W1) + self.b1.T
             a1 = self.sigmoid(z1)
-            z2 = np.matmul(a1,self.W2) #+ self.b2.T
+            z2 = np.matmul(a1,self.W2) + self.b2.T
             exp_scores = self.sigmoid(z2)
-            # probs = np.exp(exp_scores)/np.sum(np.exp(exp_scores), axis=1, keepdims=True)
             a2 = exp_scores
             
             L = np.square(self.y[index]-a2).sum()/(2*N) + self.reg_lambda*(np.square(self.W1).sum()+np.square(self.W2).sum())/(2*N)
@@ -112,30 +109,34 @@ class NNClassifier:
             losses.append([i, L])
 
             # Back Propagation
-            delta3 = -(self.y[index] - a2)
+            # Output Layer
+            delta3 = a2 - self.y[index]
             dh2_dz2 = self.sigmoid(a2, first_derivative=True) 
             db2 = a1
             dW2 = db2.T.dot(delta3*dh2_dz2) + self.reg_lambda*np.square(self.W2).sum()
-            #xdb2 = np.sum(dh2_dz2.T, axis=1)
-            
+            # xdb2 = np.sum(delta3, axis=0, keepdims=True)
+
+            # Hidden Layer
             dL_dz2 = delta3 * dh2_dz2
             dz2_dh1 = self.W2
             delta2 = dL_dz2.dot(dz2_dh1.T)
             dh1_dz1 = self.sigmoid(a1, first_derivative=True)
             dz1_dw1 = self.X[index]
             dW1 = dz1_dw1.T.dot(delta2*dh1_dz1) + self.reg_lambda*np.square(self.W1).sum()
-            #xdb1 = np.sum(dh1_dz1.T, axis=1)
+            # xdb1 = np.sum(delta2*dh1_dz1, axis=0, keepdims=True)
             
             self.W2 += -self.epsilon*dW2
             self.W1 += -self.epsilon*dW1
+            # self.b1 += -self.epsilon*xdb1
+            # self.b2 += -self.epsilon*xdb2
             if True: #(i+1)%1000==0:
                 y_pred = self.inference(self.X, [self.W1, self.W2])
                 y_actual = np.argmax(self.y, axis=1)
-                accuracy = np.sum(np.equal(y_pred,y_actual))/len(y_actual)
+                accuracy = np.sum(np.equal(y_pred, y_actual))/len(y_actual)
                 accuracies.append([i, accuracy])
 
-            if (i+1)% 10000 == 0:
-                print('Epoch %d\tLoss: %f Average L1 error: %f Accuracy: %f' %(i, L, np.mean(np.abs(delta3)), accuracy))
+            if i % 10000 == 0:
+                print('Epoch %d\tLoss: %f Average L1 error: %f Accuracy: %f' % (i, L, np.mean(np.abs(delta3)), accuracy))
         return self
 
     # Untested - will need to change several matrix operations for this part to compile.
