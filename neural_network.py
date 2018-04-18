@@ -22,10 +22,8 @@ class NNClassifier:
         self.num_features = None
         self.hidden_layer_size = None
         self.output_dim = None
-
-        # Gradient Descent Parameters
-        self.epsilon = 0.001       # Learning Rate
-        self.reg_lambda = 1e-6      # Regularization Strength
+        self.epsilon = 0.001
+        self.reg_lambda = 1e-6
 
     def calculate_loss(self):
         W1, b1, W2, b2 = self.W1, self.b1, self.W2, self.b2
@@ -46,10 +44,6 @@ class NNClassifier:
         print(1./self.train_size * data_loss)
         return 1./self.train_size * data_loss
 
-    # Learns parameters for the neural network and returns the model.
-    # hidden_layer_size: number of nodes in hidden layer
-    # iterations: number of iterations through training data for gradient descent (epochs)
-    # print_loss: (boolean) prints loss every 10000 iterations
     def fit(self, X, y, hidden_layer_size, iterations, print_loss):
         N = len(X)
         Y = np.array(y)
@@ -62,14 +56,12 @@ class NNClassifier:
             else:
                 y.append([0, 1])
         self.y = np.array(y)
-        self.train_size = X.shape[0]   # Assuming dataframe with rows as number of samples
+        self.train_size = X.shape[0]  
         self.num_features = X.shape[1]
         self.hidden_layer_size = hidden_layer_size
         self.output_dim = 2
         losses = []
         accuracies = []
-
-        # Randomly initialize parameters to random values. These will be learned.
         np.random.seed(0)
         tf.reset_default_graph()
         w1 = tf.get_variable("w1", shape=[self.num_features, self.hidden_layer_size], initializer=tf.contrib.layers.xavier_initializer(uniform=True, seed=None, dtype=tf.float64))
@@ -92,7 +84,6 @@ class NNClassifier:
             sess.run(tf.global_variables_initializer())
             self.b2 = (sess.run(wb2))
 
-        # Gradient descent. For each batch:
         for i in range(0, iterations):
             
             index = np.arange(self.X.shape[0])[:N]
@@ -101,31 +92,22 @@ class NNClassifier:
             a1 = self.sigmoid(z1)
             z2 = np.matmul(a1,self.W2) + self.b2.T
             exp_scores = self.sigmoid(z2)
-            a2 = exp_scores
-            
+            a2 = exp_scores            
             L = np.square(self.y[index]-a2).sum()/(2*N) + self.reg_lambda*(np.square(self.W1).sum()+np.square(self.W2).sum())/(2*N)
-
             losses.append([i, L])
-
             # Back Propagation
             # Output Layer
             delta3 = a2 - self.y[index]
-            dl3_a3 = self.sigmoid(a2, first_derivative=True) 
+            da2 = self.sigmoid(a2, first_derivative=True) 
             db2 = a1
-            dW2 = db2.T.dot(delta3*dl3_a3) + self.reg_lambda*np.square(self.W2).sum()
-            # xdb2 = np.sum(delta3, axis=0, keepdims=True)
-
+            dW2 = db2.T.dot(delta3*da2) + self.reg_lambda*np.square(self.W2).sum()
             # Hidden Layer
-            dz2 = delta3 * dl3_a3
-            delta2 = dz2.dot(self.W2.T)
-            dl2_a4 = self.sigmoid(a1, first_derivative=True)
-            dW1 = self.X[index].T.dot(delta2*dl2_a4) + self.reg_lambda*np.square(self.W1).sum()
-            # xdb1 = np.sum(delta2*dh1_dz1, axis=0, keepdims=True)
-            
+            dl3_da2 = delta3 * da2
+            delta2 = dl3_da2.dot(self.W2.T)
+            da1 = self.sigmoid(a1, first_derivative=True)
+            dW1 = self.X[index].T.dot(delta2*da1) + self.reg_lambda*np.square(self.W1).sum()
             self.W2 += -self.epsilon*dW2
             self.W1 += -self.epsilon*dW1
-            # self.b1 += -self.epsilon*xdb1
-            # self.b2 += -self.epsilon*xdb2
             if True:
                 y_pred = self.inference(self.X, [self.W1, self.W2])
                 y_actual = np.argmax(self.y, axis=1)
@@ -138,19 +120,14 @@ class NNClassifier:
 
     def predict(self, X):
         # Forward propagation
-        z1 = np.matmul(X, self.W1)# + self.b1.T
+        z1 = np.matmul(X, self.W1)
         a1 = self.sigmoid(z1)
-        z2 = np.matmul(a1,self.W2)# + self.b2.T
+        z2 = np.matmul(a1,self.W2)
         exp_scores = self.sigmoid(z2)
         probs = np.exp(exp_scores)/np.sum(np.exp(exp_scores), axis=1, keepdims=True)
         print(np.argmax(np.array(probs),axis = 1))
         return np.argmax(np.array(probs),axis = 1)
 
-    def relu_activation(self, data_array):
-        return np.maximum(data_array, 0)
-
-    def tanh_activation(self, data_array):
-        return np.tanh(data_array)
 
     def sigmoid(self, z, first_derivative=False):
         if first_derivative:
