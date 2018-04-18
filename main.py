@@ -21,5 +21,5 @@ if __name__ == "__main__":
     dProcessor = dataProcessor.dataProcessor()
     dProcessor.dataProcess(file_path, data_path, algo, True, True, False)
     model = learner.learner(10)
-    result = model.train("NN")
+    result = model.train("NBO")
     print(result)

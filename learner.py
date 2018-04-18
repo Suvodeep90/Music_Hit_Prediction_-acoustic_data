@@ -71,7 +71,13 @@ class learner():
             self.test_y = self.data_y[test_index]
             if self.doSmt:
                 self.doSmote()
-            if model == 'NBL2':
+            if model == 'NBO':
+                self.clf.set_data(self.preserved_data,self.train_X,self.train_y,self.test_X,self.test_y)
+                predict = self.clf.nb_fit_predict()
+                print(metrics.classification_report(self.test_y, predict, digits=3))
+                print(metrics.confusion_matrix(self.test_y, predict))
+                res = metrics.precision_recall_fscore_support(self.test_y, predict) 
+            elif model == 'NBL2':
                 res = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
             elif model == 'NBL3':
                 res = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
@@ -130,6 +136,9 @@ class learner():
             print("NBL2 model Training")
             self.model = NBL3()
             self.clf = GaussianNB()
+        elif model == 'NBO':
+            print("Our implementation of NB is running")
+            self.clf = nb.naive_bayes()
         return self.clf
 
     def doSmote(self):

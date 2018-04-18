@@ -40,7 +40,7 @@ class naive_bayes():
         self.columns = data.columns.values.tolist()
 
         
-    def nb_fit(self):
+    def nb_fit_predict(self):
         # Summary Statistics
         sumstat_hit = pd.DataFrame()
         for i in range(len(self.train_X_hit.columns)):
@@ -75,7 +75,6 @@ class naive_bayes():
             std_nothit = sumstat_nothit[i][1]
             cnd1 = self.condProbability(x, mean_nothit, std_nothit)
             posterior_probabilities[1] *= cnd1
-            print([cnd0,cnd1])
         return posterior_probabilities
     
     
