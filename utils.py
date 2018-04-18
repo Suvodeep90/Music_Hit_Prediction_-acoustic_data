@@ -4,8 +4,9 @@ import matplotlib.gridspec as gridspec
 
 import numpy as np
 import os
-#import imageio
+import imageio
 import shutil
+
 
 def plot_xor():
     xx, yy = np.meshgrid(np.linspace(-3, 3, 50), np.linspace(-3, 3, 50))
@@ -21,6 +22,7 @@ def plot_xor():
     plt.plot(X[np.where(y == 1), 0], X[np.where(y == 1), 1], 'bo')
     plt.title('XOR')
     plt.show()
+
 
 def plot_decision_boundary(X, y_actual, inference, save_filepath=None, text=None):
     # Set min and max values and give it some padding
@@ -50,6 +52,7 @@ def plot_decision_boundary(X, y_actual, inference, save_filepath=None, text=None
         plt.savefig(save_filepath)
     plt.close()
 
+
 def plot_function(losses, save_filepath=None, ylabel=None, title=None):
     plt.figure()
     t = [x[0] for x in losses]
@@ -68,6 +71,7 @@ def plot_function(losses, save_filepath=None, ylabel=None, title=None):
         plt.savefig(save_filepath)
     plt.close()
 
+
 def make_gif(input_folder, save_filepath):
     episode_frames = []
     time_per_step = 0.25
@@ -78,6 +82,7 @@ def make_gif(input_folder, save_filepath):
         episode_frames = [imageio.imread(file_path) for file_path in file_paths if file_path.endswith('.png')]
     episode_frames = np.array(episode_frames)
     imageio.mimsave(save_filepath, episode_frames, duration=time_per_step)
+
 
 def make_all_gif(input_folder, save_filepath):
     time_per_step = 0.25
@@ -128,6 +133,7 @@ def make_all_gif(input_folder, save_filepath):
 
     episode_frames = np.array(episode_frames)
     imageio.mimsave(save_filepath, episode_frames, duration=time_per_step)
+
 
 def reset_folders():
     folders = [os.path.join('./scratch_mlp/plots', f) for f in ['accuracy', 'boundary', 'loss']]

@@ -6,8 +6,6 @@ Created on Mon Apr  2 08:43:52 2018
 """
 
 import numpy as np
-import pdb
-import math
 import tensorflow as tf
 
 
@@ -50,8 +48,8 @@ class NNClassifier:
 
     # Learns parameters for the neural network and returns the model.
     # hidden_layer_size: number of nodes in hidden layer
-    # iterations: number of iterations through training data for gradient descent
-    # print_loss: (boolean) prints loss every 1000 iterations
+    # iterations: number of iterations through training data for gradient descent (epochs)
+    # print_loss: (boolean) prints loss every 10000 iterations
     def fit(self, X, y, hidden_layer_size, iterations, print_loss):
         N = len(X)
         Y = np.array(y)
@@ -93,6 +91,7 @@ class NNClassifier:
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             self.b2 = (sess.run(wb2))
+
         # Gradient descent. For each batch:
         for i in range(0, iterations):
             
@@ -129,18 +128,16 @@ class NNClassifier:
             self.W1 += -self.epsilon*dW1
             # self.b1 += -self.epsilon*xdb1
             # self.b2 += -self.epsilon*xdb2
-            if True: #(i+1)%1000==0:
+            if True:
                 y_pred = self.inference(self.X, [self.W1, self.W2])
                 y_actual = np.argmax(self.y, axis=1)
                 accuracy = np.sum(np.equal(y_pred, y_actual))/len(y_actual)
                 accuracies.append([i, accuracy])
 
-            if i % 10000 == 0:
+            if i % 10000 == 0 & print_loss:
                 print('Epoch %d\tLoss: %f Average L1 error: %f Accuracy: %f' % (i, L, np.mean(np.abs(delta3)), accuracy))
         return self
 
-    # Untested - will need to change several matrix operations for this part to compile.
-    # Should resemble other forward propagation code.
     def predict(self, X):
         # Forward propagation
         z1 = np.matmul(X, self.W1)# + self.b1.T
@@ -151,13 +148,13 @@ class NNClassifier:
         print(np.argmax(np.array(probs),axis = 1))
         return np.argmax(np.array(probs),axis = 1)
 
-    def relu_activation(self,data_array):
+    def relu_activation(self, data_array):
         return np.maximum(data_array, 0)
 
-    def tanh_activation(self,data_array):
+    def tanh_activation(self, data_array):
         return np.tanh(data_array)
 
-    def sigmoid(self,z, first_derivative=False):
+    def sigmoid(self, z, first_derivative=False):
         if first_derivative:
             return z*(1.0-z)
         return 1.0/(1.0+np.exp(-z))
@@ -167,7 +164,7 @@ class NNClassifier:
             return 1.0-z*z
         return (1.0-np.exp(-z))/(1.0+np.exp(-z))
 
-    def inference(self,data, weights):
+    def inference(self, data, weights):
         a1 = self.sigmoid(np.matmul(data, weights[0]))
         logits = np.matmul(a1, weights[1])
         probs = np.exp(logits)/np.sum(np.exp(logits), axis=1, keepdims=True)
