@@ -37,6 +37,16 @@ if __name__ == "__main__":
     """
     feature_selector = 'consistency_subset'
     dProcessor = dataProcessor.dataProcessor()
+    """
+    ++++++++++++++++++++++++++++++++++++
+    dataProcessing parameters:
+        file_path: Full Path of the dataset
+        data_path: Folder path where the dataset exists
+        algo: required only when using recursive_feature_selector as feature selector
+        feature_selector = feature selector
+        next 3 parameters are for whether to use Normalization, Missing value treatment and if feature selection will be done
+    ++++++++++++++++++++++++++++++++++++
+    """
     dProcessor.dataProcess(file_path, data_path, algo, feature_selector,True, True, False)
     """
     ++++++++++++++++++++++++++++++++++++
