@@ -28,6 +28,7 @@ from sklearn.ensemble import AdaBoostClassifier
 import numpy as np 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import StratifiedKFold
+import nb
 
 
 class learner():

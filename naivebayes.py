@@ -83,7 +83,7 @@ def posteriorProbability(test_row,sumstat_hit,sumstat_nothit,prob_hit):
 
 def predict(test_row,sumstat_hit,sumstat_nothit,prob_hit):
     posterior_probabilities = posteriorProbability(test_row,sumstat_hit,sumstat_nothit,prob_hit)
-    print posterior_probabilities
+    #print(posterior_probabilities)
     if 100000*posterior_probabilities[0] > 10*posterior_probabilities[1]:
         pred_label = 1
     else:
@@ -100,8 +100,8 @@ def NBClassifier(test_X,sumstat_hit,sumstat_nothit,prob_hit):
 
 
 def check():
-    print len(train_y[train_y == 1])
-    print len(train_y[train_y == 0])
+    print(len(train_y[train_y == 1]))
+    print(len(train_y[train_y == 0]))
     #print len(train_X)
     #print len(train_X_hit)
     #print len(train_X_nothit)
