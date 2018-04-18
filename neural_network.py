@@ -110,18 +110,16 @@ class NNClassifier:
             # Back Propagation
             # Output Layer
             delta3 = a2 - self.y[index]
-            dh2_dz2 = self.sigmoid(a2, first_derivative=True) 
+            dl3_a3 = self.sigmoid(a2, first_derivative=True) 
             db2 = a1
-            dW2 = db2.T.dot(delta3*dh2_dz2) + self.reg_lambda*np.square(self.W2).sum()
+            dW2 = db2.T.dot(delta3*dl3_a3) + self.reg_lambda*np.square(self.W2).sum()
             # xdb2 = np.sum(delta3, axis=0, keepdims=True)
 
             # Hidden Layer
-            dL_dz2 = delta3 * dh2_dz2
-            dz2_dh1 = self.W2
-            delta2 = dL_dz2.dot(dz2_dh1.T)
-            dh1_dz1 = self.sigmoid(a1, first_derivative=True)
-            dz1_dw1 = self.X[index]
-            dW1 = dz1_dw1.T.dot(delta2*dh1_dz1) + self.reg_lambda*np.square(self.W1).sum()
+            dz2 = delta3 * dl3_a3
+            delta2 = dz2.dot(self.W2.T)
+            dl2_a4 = self.sigmoid(a1, first_derivative=True)
+            dW1 = self.X[index].T.dot(delta2*dl2_a4) + self.reg_lambda*np.square(self.W1).sum()
             # xdb1 = np.sum(delta2*dh1_dz1, axis=0, keepdims=True)
             
             self.W2 += -self.epsilon*dW2

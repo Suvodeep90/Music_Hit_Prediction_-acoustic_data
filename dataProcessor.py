@@ -27,7 +27,7 @@ class dataProcessor():
         self.clf = None
         self.df = pd.DataFrame(data = None)
 
-    def dataProcess(self, file, data_path, model,normalize = False, missingValueTreatment = False, featureSelect = False):
+    def dataProcess(self, file, data_path, model,feature_selector,normalize = False, missingValueTreatment = False, featureSelect = False):
         self.excel_data = pd.read_csv(file)
         self.model = model
         self.headers = self.excel_data.columns.values.tolist()
@@ -50,7 +50,7 @@ class dataProcessor():
         if featureSelect:
             model = learner.learner()
             self.clf = model.selectedLearner(self.model)
-            self.excel_data = self.featureSelction(self.excel_data)
+            self.excel_data = self.featureSelction(self.excel_data,feature_selector)
         if self.excel_data.isnull().values.any():
             print("There is blank cells, please check..")
             print(self.excel_data.isnull().sum())
@@ -67,5 +67,12 @@ class dataProcessor():
         imp = preprocessing.Imputer(missing_values='NaN', strategy='most_frequent', axis=0, verbose=0, copy=True)
         return imp.fit_transform(df)
     
-    def featureSelction(self,df):
-        return featureSelector.featureSelection(df,self.clf).recursive_feature_selector()
+    def featureSelction(self,df,feature_selector):
+        if feature_selector == 'consistency_subset':
+            return featureSelector.featureSelection(df,self.clf).consistency_subset()
+        elif feature_selector == 'selectkBest':
+            return featureSelector.featureSelection(df,self.clf).selectkBest()
+        elif feature_selector == 'recursive_feature_selector':
+            return featureSelector.featureSelection(df,self.clf).recursive_feature_selector()
+        else:
+            raise ValueError("Wrong Argument passed in feature_selector") 

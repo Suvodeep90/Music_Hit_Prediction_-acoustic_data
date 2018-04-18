@@ -26,6 +26,9 @@ class naive_bayes():
         self.train_X_nothit = None
         self.train_y_nothit = None
         self.columns = None
+        self.sumstat_hit = None
+        self.sumstat_nothit = None
+        self.prob_hit = None
         
         
     def set_data(self,data,train_X,train_y,test_X,test_y):
@@ -38,6 +41,8 @@ class naive_bayes():
         self.train_X_nothit = self.train_X[train_y == 0]
         self.train_y_nothit = self.train_y[train_y == 0]
         self.columns = data.columns.values.tolist()
+        self.hit_ratio = math.floor((self.train_y_hit.shape[0] + self.train_y_nothit.shape[0])/self.train_y_hit.shape[0])
+        self.nohit_ratio = math.floor((self.train_y_hit.shape[0] + self.train_y_nothit.shape[0])/self.train_y_nothit.shape[0])
 
         
     def nb_fit_predict(self):
@@ -49,6 +54,9 @@ class naive_bayes():
         for i in range(len(self.train_X_nothit.columns)):
             sumstat_nothit[i] = ([numpy.mean(self.train_X_nothit[self.columns[i]]), numpy.std(self.train_X_nothit[self.columns[i]])])
         prob_hit = [len(self.train_X_hit)/len(self.train_X), len(self.train_X_nothit)/len(self.train_X)]
+        self.sumstat_hit = sumstat_hit
+        self.sumstat_nothit = sumstat_nothit
+        self.prob_hit = prob_hit
         res = self.NBClassifier(self.test_X,sumstat_hit,sumstat_nothit,prob_hit)
         return res
         
@@ -62,7 +70,7 @@ class naive_bayes():
     def posteriorProbability(self,test_row,sumstat_hit,sumstat_nothit,prob_hit):
         posterior_probabilities = prob_hit[:]
         for i in range(len(test_row)):
-    
+            
             x = test_row[i]
     
             mean_hit = sumstat_hit[i][0]
@@ -77,11 +85,17 @@ class naive_bayes():
             posterior_probabilities[1] *= cnd1
         return posterior_probabilities
     
+    def predict_proba(self,test_row):
+        posterior_probabilities = []
+        for i in range(len(test_row)):
+            posterior_probabilities.append(self.posteriorProbability(test_row.iloc[i],self.sumstat_hit,self.sumstat_nothit,self.prob_hit))
+        return posterior_probabilities
+    
     
     def predict(self,test_row,sumstat_hit,sumstat_nothit,prob_hit):
         posterior_probabilities = self.posteriorProbability(test_row,sumstat_hit,sumstat_nothit,prob_hit)
         #print(posterior_probabilities)
-        if 100000*posterior_probabilities[0] > 10*posterior_probabilities[1]:
+        if math.pow(10,self.hit_ratio)*posterior_probabilities[0] > math.pow(10,self.nohit_ratio)*posterior_probabilities[1]:
             pred_label = 1
         else:
             pred_label = 0

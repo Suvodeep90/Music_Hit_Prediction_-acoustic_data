@@ -66,7 +66,7 @@ class learner():
     
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
-        self.mod = self.selectedLearner(model)
+        self.selectedLearner(model)
         kf = StratifiedKFold(self.data_y.values, self.fold, shuffle=True)
         for train_index, test_index in kf:
             self.train_X = self.data_X.ix[train_index]
@@ -98,8 +98,8 @@ class learner():
                 print(metrics.confusion_matrix(self.test_y, predict))
                 res = metrics.precision_recall_fscore_support(self.test_y, predict)
             self.result.append(res)
-            self.plot_roc(self.test_y, self.test_X, self.mod)
-            self.model_eval(self.train_y, self.train_X, self.test_y, self.test_X, 'NB', 'RF', 'MLP')
+#        self.plot_roc(self.test_y, self.test_X, self.clf)
+#        self.model_eval(self.train_y, self.train_X, self.test_y, self.test_X, 'NB', 'RF', 'MLP')
         
         return self.result
     
@@ -158,7 +158,6 @@ class learner():
         
         
     def plot_roc(self, y, x, model):
-        
         y_score = model.predict_proba(x)[:,1]
         fpr, tpr, thr = roc_curve(y, y_score)
     
