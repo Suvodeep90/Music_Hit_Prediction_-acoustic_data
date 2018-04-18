@@ -27,7 +27,11 @@ import smote
 from sklearn.ensemble import AdaBoostClassifier
 import numpy as np 
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.cross_validation import StratifiedKFold
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+import matplotlib.pyplot as plt
+
 import nb
 
 
@@ -62,7 +66,7 @@ class learner():
     
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
-        self.selectedLearner(model)
+        self.mod = self.selectedLearner(model)
         kf = StratifiedKFold(self.data_y.values, self.fold, shuffle=True)
         for train_index, test_index in kf:
             self.train_X = self.data_X.ix[train_index]
