@@ -53,7 +53,7 @@ class smote(object):
 
     def fit_transform(self):
         df = self.data.values.tolist()
-        classCount,majority_num = self.get_majority_num()
+        classCount, majority_num = self.get_majority_num()
         for label, num in classCount.items():
             if num < majority_num:
                 minority_number = majority_num - num
@@ -61,7 +61,7 @@ class smote(object):
                 if len(self.train_X) < self.k_neighbor:
                     self.neighbor = len(self.train_X)
                 self.clf = NearestNeighbors(n_neighbors=self.k_neighbor).fit(self.train_X)
-                self.clf_quality = KNeighborsClassifier(n_neighbors=self.m_neighbor).fit(self.train_X_all,self.train_y)
+                self.clf_quality = KNeighborsClassifier(n_neighbors=self.m_neighbor).fit(self.train_X_all, self.train_y)
                 count = 0
                 while(count<minority_number):
                     neighbor, sample = self.get_neighbors(self.train_X)
