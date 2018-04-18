@@ -20,5 +20,6 @@ if __name__ == "__main__":
     algo = 'RF'
     dProcessor = dataProcessor.dataProcessor()
     dProcessor.dataProcess(file_path, data_path, algo, True, True, False)
-    model = learner.learner()
-    model.train("NN")
+    model = learner.learner(10)
+    result = model.train("NN")
+    print(result)
