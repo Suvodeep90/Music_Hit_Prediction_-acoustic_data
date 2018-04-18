@@ -6,7 +6,6 @@ Created on Fri Mar  2 11:51:43 2018
 """
 
 import os
-import pandas as pd
 import dataProcessor
 import learner
 import warnings
@@ -20,7 +19,6 @@ if __name__ == "__main__":
     file_path = os.path.join(data_path, dataSet)
     algo = 'RF'
     dProcessor = dataProcessor.dataProcessor()
-    dProcessor.dataProcess(file_path, data_path, algo,True, True, True)
+    dProcessor.dataProcess(file_path, data_path, algo, True, True, False)
     model = learner.learner()
-    model.train("NB")
-    
+    model.train("NN")
