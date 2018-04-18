@@ -27,6 +27,7 @@ import smote
 from sklearn.ensemble import AdaBoostClassifier
 import numpy as np 
 from sklearn.neighbors import KNeighborsClassifier
+import NBA
 
 
 class learner():
@@ -44,6 +45,7 @@ class learner():
         self.data_path = os.path.join(self.cwd, self.data_loc)
         self.file_path = os.path.join(self.data_path, "processed_data.pkl")
         self.data = pd.read_pickle(self.file_path)
+        self.preserved_data = pd.read_pickle(self.file_path)
         self.headers = self.data.columns.values.tolist()
         for __header in self.headers:
              if self.class_s in __header:
@@ -61,7 +63,6 @@ class learner():
         if self.doSmt:
             self.doSmote()
             
-        #Layer 1
         if model == 'NBL2':
             res = self.model.fit_predict( self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
         elif model == 'NBL3':
@@ -79,6 +80,7 @@ class learner():
             print(metrics.confusion_matrix(self.test_y, predict))
             res = metrics.precision_recall_fscore_support(self.test_y, predict)
         return res
+    
     
     def selectedLearner(self, model):
         if model == 'DT':

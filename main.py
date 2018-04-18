@@ -20,7 +20,7 @@ if __name__ == "__main__":
     file_path = os.path.join(data_path, dataSet)
     algo = 'RF'
     dProcessor = dataProcessor.dataProcessor()
-    dProcessor.dataProcess(file_path, data_path, algo,True, True, True)
+    dProcessor.dataProcess(file_path, data_path, algo,True, True, False)
     model = learner.learner()
     model.train("NB")
     
