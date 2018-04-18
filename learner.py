@@ -87,6 +87,9 @@ class learner():
                 print(metrics.confusion_matrix(self.test_y, predict))
                 res = metrics.precision_recall_fscore_support(self.test_y, predict)
             self.result.append(res)
+            self.plot_roc(self.test_y, self.test_X, self.mod)
+            self.model_eval(self.train_y, self.train_X, self.test_y, self.test_X, 'NB', 'RF', 'MLP')
+        
         return self.result
     
     
@@ -138,7 +141,57 @@ class learner():
         self.train_y = self.data[self.class_label]
         self.data.drop([self.class_label], axis=1, inplace=True)
         self.train_X = self.data
-
+        
+        
+    def plot_roc(self, y, x, model):
+        
+        y_score = model.predict_proba(x)[:,1]
+        fpr, tpr, thr = roc_curve(y, y_score)
+    
+        rocauc = roc_auc_score(y, y_score, average='micro')
+        
+        plt.plot(fpr, tpr, label='ROC curve (AUC = %0.4f)' %rocauc)
+        plt.xlabel("False Positive Rate (FPR)")
+        plt.ylabel("True Positive Rate (TPR)")
+        plt.title('ROC Curve')
+        plt.margins(.02)
+        plt.legend()
+        plt.grid()
+        plt.show()
+    
+        #return rocauc
+    
+    def model_eval(self, train_y, train_X, test_y, test_x, cl1, cl2, cl3):
+        
+        model1 = self.selectedLearner(cl1).fit(self.train_X,self.train_y)
+        model2 = self.selectedLearner(cl2).fit(self.train_X,self.train_y)
+        model3 = self.selectedLearner(cl3).fit(self.train_X,self.train_y)
+        
+        plt.figure(figsize=(6, 6))
+        
+        fpr, tpr, thr = roc_curve(test_y, model1.predict_proba(test_x)[:,1])
+        rocauc = roc_auc_score(test_y, model1.predict_proba(test_x)[:,1], average='micro')
+        plt.plot(fpr, tpr, color='navy', label=str(cl1)+' (AUC = %0.4f)' %rocauc)
+        
+        # SVM
+        fpr, tpr, thr = roc_curve(test_y, model2.predict_proba(test_x)[:,1])
+        rocauc = roc_auc_score(test_y, model2.predict_proba(test_x)[:,1], average='micro')
+        plt.plot(fpr, tpr, color='red', label=str(cl2)+' (AUC = %0.4f)' %rocauc)
+        
+        # Random forest
+        fpr, tpr, thr = roc_curve(test_y, model3.predict_proba(test_x)[:,1])
+        rocauc = roc_auc_score(test_y, model3.predict_proba(test_x)[:,1], average='micro')
+        plt.plot(fpr, tpr, color='green', label=str(cl3)+' (AUC = %0.4f)' %rocauc)
+        
+        # figure properties
+        plt.xlabel("False Positive Rate (FPR)")
+        plt.ylabel("True Positive Rate (TPR)")
+        plt.title('ROC Curve')
+        plt.margins(.02)
+        plt.legend()
+        plt.grid(alpha=.3)
+        plt.show()
+        
 
 class NBL2():
     
