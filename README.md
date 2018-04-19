@@ -39,7 +39,7 @@ this issue, we implemented the SMOTE algorithm to sample the minority class (hit
 2. For "algo", select either "RF" for random forest or "DT" for decision tree for the recursive feature selection setting.
 3. For "feature_selector", select among "consistency_subset", "selectkBest", or "recursive_feature_selector" to reduce the dimensionality
 of the dataset by choosing the most relevant features.
-4. When setting the******** data pre-processing, the parameters are "file_path", "data_path", "algo", "feature_selector", and three booleans. 
+4. When setting the data pre-processing, the parameters are "file_path", "data_path", "algo", "feature_selector", and three booleans. 
 The booleans are whether to use normalization, missing value treatment, and if feature selection will be performed, repsectively.
 Note that when "NN" is chosen, we achieved the best results when no feature selection is performed (i.e., the last boolean is False).
 5. Choose the cross-validation folds for performance assessment using "nFold".
