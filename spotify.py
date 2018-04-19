@@ -4,6 +4,15 @@
 Created on Sat Apr  7 18:33:06 2018
 
 @author: Amanul
+
+This code uses spotify api (spotipy) to collect elements of music from the spotify databse. The api takes artist name as input and
+returns attributes such as - accountiness, danceability, loudness, speechiness, acousticness, instrumentalness, liveness and so on.
+Running the code - 
+Once the code starts execution it opens up spotify login page that you need to login to to get access to the database, once logged
+in you need to copy the url and paste on ur console for the exection to proceed. Once the attributes are fetch they are automatically
+stored a csv file at the specifid data location.
+You may need to create a developer account at spotify to get a client_id and client_password to access (the one included in the code is 
+my client Id and password and you may not be able to use it because you would need my spotify credentials to login when the brownser prompts
 """
 
 from spotipy.oauth2 import SpotifyClientCredentials
