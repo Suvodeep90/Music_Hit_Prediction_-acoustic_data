@@ -80,7 +80,8 @@ class learner():
                 predict = self.clf.nb_fit_predict()
                 print(metrics.classification_report(self.test_y, predict, digits=3))
                 print(metrics.confusion_matrix(self.test_y, predict))
-                res = metrics.precision_recall_fscore_support(self.test_y, predict) 
+                res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
+                        metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')] 
             elif model == 'NBL2':
                 res = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
             elif model == 'NBL3':
@@ -90,18 +91,20 @@ class learner():
                 predict = self.clf.predict(np.array(self.test_X))
                 print(metrics.classification_report(self.test_y, predict, digits=3))
                 print(metrics.confusion_matrix(self.test_y, predict))
-                res = metrics.precision_recall_fscore_support(self.test_y, predict)
+                res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
+                        metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
             else:
                 self.clf.fit(self.train_X, self.train_y)
                 predict = self.clf.predict(self.test_X)
                 print(metrics.classification_report(self.test_y, predict, digits=3))
                 print(metrics.confusion_matrix(self.test_y, predict))
-                res = metrics.precision_recall_fscore_support(self.test_y, predict)
+                res = [metrics.f1_score(self.test_y, predict,average='weighted'),
+                       metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
             self.result.append(res)
 #        self.plot_roc(self.test_y, self.test_X, self.clf)
 #        self.model_eval(self.train_y, self.train_X, self.test_y, self.test_X, 'NB', 'RF', 'MLP')
-        
-        return self.result
+        self.result = pd.DataFrame(self.result, columns = ['f1-score','Accuracy','AUC'])
+        return self.result.mean()
     
     
     def selectedLearner(self, model):
@@ -261,7 +264,8 @@ class NBL2():
         self.test_y = test_y1.append(test_y2)
         print(metrics.classification_report(self.test_y, predict, digits=3))
         print(metrics.confusion_matrix(self.test_y, predict))
-        res = metrics.precision_recall_fscore_support(self.test_y, predict)
+        res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
+                metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
         return res
 
 
@@ -518,5 +522,6 @@ class NBL3():
         print(metrics.classification_report(self.test_y, predict, digits=3))
         print(metrics.confusion_matrix(self.test_y, predict))
 
-        res = metrics.precision_recall_fscore_support(self.test_y, predict)
+        res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
+                metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
         return res
