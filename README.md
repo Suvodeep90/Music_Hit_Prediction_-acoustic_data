@@ -34,5 +34,27 @@ We also implemented the following algorithms from scratch:
 The primary issue faced in this project was that of a class imbalance. Intuitively, there are less hit songs than non-hit songs. To combat
 this issue, we implemented the SMOTE algorithm to sample the minority class (hit songs) further. 
 
+## Instructions ##
+1. Using main.py, choose the settings and algorithm to perform hit song prediction. These same instructions are listed in main.py.
+2. For "algo", select either "RF" for random forest or "DT" for decision tree for the recursive feature selection setting.
+3. For "feature_selector", select among "consistency_subset", "selectkBest", or "recursive_feature_selector" to reduce the dimensionality
+of the dataset by choosing the most relevant features.
+4. When setting the******** data pre-processing, the parameters are "file_path", "data_path", "algo", "feature_selector", and three booleans. 
+The booleans are whether to use normalization, missing value treatment, and if feature selection will be performed, repsectively.
+Note that when "NN" is chosen, we achieved the best results when no feature selection is performed (i.e., the last boolean is False).
+5. Choose the cross-validation folds for performance assessment using "nFold".
+6. Finally, choose the type of model to run using "_learner". The following are all options:
+    1) Naive Bayes: NB
+    2) Decision Tree: DT
+    3) Random Forest: RF
+    4) Support Vector Machine: SVM
+    5) Logistic Regression: LR
+    6) Neural Network: MLP
+    7) Our Implementation of Neural Network: NN
+    8) AdaBoost: ADA
+    9) Tree Based Naive Bayes with depth 2: NBL2
+    10) Tree Based Naive Bayes with depth 3: NBL3
+    11) Our Implementation of Naive Bayes: NBO
+
 ## Resources ##
 Dorien Herremans, David Martens & Kenneth Sörensen (2014) Dance Hit Song Prediction, Journal of New Music Research, 43:3, 291-302.
