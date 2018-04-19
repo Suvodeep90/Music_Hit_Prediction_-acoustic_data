@@ -48,7 +48,7 @@ class dataProcessor():
             self.excel_data = pd.concat([self.DataNormalize(self.excel_data),self.df], axis=1)
             self.excel_data[self.class_label] = self.dependent
         if featureSelect:
-            model = learner.learner()
+            model = learner.learner(2)
             self.clf = model.selectedLearner(self.model)
             self.excel_data = self.featureSelction(self.excel_data,feature_selector)
         if self.excel_data.isnull().values.any():

@@ -47,7 +47,7 @@ if __name__ == "__main__":
         next 3 parameters are for whether to use Normalization, Missing value treatment and if feature selection will be done
     ++++++++++++++++++++++++++++++++++++
     """
-    dProcessor.dataProcess(file_path, data_path, algo, feature_selector, True, True, False)
+    dProcessor.dataProcess(file_path, data_path, algo, feature_selector, True, True, True)
     """
     ++++++++++++++++++++++++++++++++++++
     cross validation parameter:

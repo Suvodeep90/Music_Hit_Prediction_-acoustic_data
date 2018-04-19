@@ -25,24 +25,6 @@ class NNClassifier:
         self.epsilon = 0.001
         self.reg_lambda = 1e-6
 
-    def calculate_loss(self):
-        W1, b1, W2, b2 = self.W1, self.b1, self.W2, self.b2
-
-        # Forward propagation
-        z1 = self.W1.T.dot(self.X) + self.b1
-        a1 = self.relu_activation(z1)
-        z2 = self.W2.T.dot(a1) + self.b2
-        exp_scores = np.exp(z2)
-        probs = exp_scores.T / np.sum(exp_scores, axis=1, keepdims=True)
-
-        # Calculate loss
-        correct_logprobs = -np.log(probs)
-        data_loss = np.sum(correct_logprobs)
-
-        # Regularize loss
-        data_loss += self.reg_lambda / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
-        print(1./self.train_size * data_loss)
-        return 1./self.train_size * data_loss
 
     def fit(self, X, y, hidden_layer_size, iterations, print_loss):
         N = len(X)
