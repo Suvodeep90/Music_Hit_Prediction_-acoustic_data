@@ -12,7 +12,7 @@ import math
 import numpy
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
-
+import numpy as np
 
 class naive_bayes():
     
@@ -88,8 +88,9 @@ class naive_bayes():
     def predict_proba(self,test_row):
         posterior_probabilities = []
         for i in range(len(test_row)):
-            posterior_probabilities.append(self.posteriorProbability(test_row.iloc[i],self.sumstat_hit,self.sumstat_nothit,self.prob_hit))
-        return posterior_probabilities
+            posterior_probabilities.append(self.posteriorProbability(test_row[i],self.sumstat_hit,self.sumstat_nothit,self.prob_hit))
+        print(posterior_probabilities)
+        return np.array(posterior_probabilities)
     
     
     def predict(self,test_row,sumstat_hit,sumstat_nothit,prob_hit):
