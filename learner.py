@@ -19,6 +19,7 @@ from sklearn.naive_bayes import MultinomialNB,GaussianNB,BernoulliNB
 from sklearn.neural_network import MLPClassifier
 from sklearn import tree
 from sklearn.model_selection import train_test_split
+from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
@@ -31,6 +32,7 @@ from sklearn.ensemble import VotingClassifier
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 import matplotlib.pyplot as plt
+from scipy import interp
 
 import nb
 
@@ -61,11 +63,14 @@ class learner():
         self.data_X = self.data
         self.fold = fold
         self.result = []
-#        self.train_X, self.test_X, self.train_y, self.test_y = train_test_split(
-#                self.data_X, self.data_y, test_size=0.33, random_state=38)      
-    
+        self.roc_results = []
+        self.tprs = []
+        self.aucs = []
+        self.mean_fpr = np.linspace(0, 1, 100)
+
     def train(self, model):
         print("Model training Starting>>>>>>>>>>>>")
+        print("Starting with Model ", model)
         self.selectedLearner(model)
         kf = StratifiedKFold(self.data_y.values, self.fold, shuffle=True)
         for train_index, test_index in kf:
@@ -81,30 +86,52 @@ class learner():
                 print(metrics.classification_report(self.test_y, predict, digits=3))
                 print(metrics.confusion_matrix(self.test_y, predict))
                 res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
-                        metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')] 
+                        metrics.accuracy_score(self.test_y, predict), metrics.roc_auc_score(self.test_y, self.clf.predict_proba(np.array(self.test_X))[:,1], average='weighted')]
+                pred_prob = self.clf.predict_proba(np.array(self.test_X))[:,1]
+                self.tprs, self.aucs = self.compute_roc(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, pred_prob)
+                
             elif model == 'NBL2':
-                res = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
+                res, predict, y = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
+                roc = np.array(roc_curve(y, predict))
+                self.roc_results.append(roc)
+                
             elif model == 'NBL3':
-                res = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
+                res, predict, y = self.model.fit_predict(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, self.class_label)
+                roc = np.array(roc_curve(y, predict))
+                self.roc_results.append(roc)
+                
             elif model == 'NN':
                 self.clf.fit(np.array(self.train_X), np.array(self.train_y), 10, 100000, True)
                 predict = self.clf.predict(np.array(self.test_X))
                 print(metrics.classification_report(self.test_y, predict, digits=3))
                 print(metrics.confusion_matrix(self.test_y, predict))
                 res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
-                        metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
+                        metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict, average='weighted')]
+                roc = np.array(roc_curve(self.test_y, predict))
+                self.roc_results.append(roc)
+                
             else:
                 self.clf.fit(self.train_X, self.train_y)
                 predict = self.clf.predict(self.test_X)
                 print(metrics.classification_report(self.test_y, predict, digits=3))
                 print(metrics.confusion_matrix(self.test_y, predict))
                 res = [metrics.f1_score(self.test_y, predict,average='weighted'),
-                       metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
+                       metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, self.clf.predict_proba(np.array(self.test_X))[:,1], average='weighted')]
+                pred_prob = self.clf.predict_proba(np.array(self.test_X))[:,1]
+                self.tprs, self.aucs = self.compute_roc(self.clf, self.train_X, self.train_y, self.test_X, self.test_y, pred_prob)
+               
             self.result.append(res)
-#        self.plot_roc(self.test_y, self.test_X, self.clf)
-#        self.model_eval(self.train_y, self.train_X, self.test_y, self.test_X, 'NB', 'RF', 'MLP')
+            
         self.result = pd.DataFrame(self.result, columns = ['f1-score','Accuracy','AUC'])
-        return self.result.mean()
+        self.result = self.result.mean()
+        
+        if(model == 'NBL2' or model == 'NBL3' or model == 'NN'):
+            self.roc_results = np.divide(np.array(self.roc_results).sum(axis=0),self.fold)
+            self.plot_roc(self.roc_results, self.result['AUC'], model)
+        else:
+            self.plot_roc_2(self.tprs, self.aucs, model)
+        
+        return self.result
     
     
     def selectedLearner(self, model):
@@ -116,7 +143,7 @@ class learner():
             self.clf = RandomForestClassifier(n_estimators=2000, criterion='entropy')
         elif model == 'SVM':
             print("SVM Training")
-            self.clf = svm.SVC(kernel='linear')
+            self.clf = svm.SVC(kernel='linear', probability=True)
         elif model == 'LR':
             print("Logistic Regression Training")
             self.clf = LogisticRegression()
@@ -160,13 +187,58 @@ class learner():
         self.train_X = self.data
         
         
-    def plot_roc(self, y, x, model):
-        y_score = model.predict_proba(x)[:,1]
-        fpr, tpr, thr = roc_curve(y, y_score)
-    
-        rocauc = roc_auc_score(y, y_score, average='micro')
+    def compute_roc(self, clf, train_X, train_y, test_X, test_y, probas_):
         
-        plt.plot(fpr, tpr, label='ROC curve (AUC = %0.4f)' %rocauc)
+        fpr, tpr, thresholds = roc_curve(test_y, probas_)
+        self.tprs.append(interp(self.mean_fpr, fpr, tpr))
+        self.tprs[-1][0] = 0.0
+        roc_auc = auc(fpr, tpr)
+        self.aucs.append(roc_auc)
+        
+        return self.tprs, self.aucs  
+        
+    def plot_roc_2(self, tprs, aucs, model):
+        
+        plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r',
+                 label='Luck', alpha=.8)
+        
+        mean_tpr = np.mean(tprs, axis=0)
+        mean_tpr[-1] = 1.0
+        mean_auc = auc(self.mean_fpr, mean_tpr)
+    
+        std_auc = np.std(aucs)
+        plt.plot(self.mean_fpr, mean_tpr, color='b',
+                 label= str(model)+' (AUC = %0.2f $\pm$ %0.2f)' % (mean_auc, std_auc),
+                 lw=2, alpha=.8)
+        
+        std_tpr = np.std(tprs, axis=0)
+        tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
+        tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
+        plt.fill_between(self.mean_fpr, tprs_lower, tprs_upper, color='grey', alpha=.2,
+                         label=r'$\pm$ 1 std. dev.')
+        
+        plt.xlim([-0.05, 1.05])
+        plt.ylim([-0.05, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver operating characteristic example')
+        plt.legend(loc="lower right")
+        plt.show()
+        
+        
+    def plot_roc(self, roc_results, rocauc, model):
+        
+        fpr, tpr, thr = roc_results[0], roc_results[1], roc_results[2] 
+    
+        plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r',
+                 label='Luck', alpha=.8)
+        
+        plt.plot(fpr, tpr, color='b',
+                 label= str(model)+' (AUC = %0.2f)' % (rocauc),
+                 lw=2, alpha=.8)
+         
+        plt.xlim([-0.05, 1.05])
+        plt.ylim([-0.05, 1.05])
         plt.xlabel("False Positive Rate (FPR)")
         plt.ylabel("True Positive Rate (TPR)")
         plt.title('ROC Curve')
@@ -174,8 +246,6 @@ class learner():
         plt.legend()
         plt.grid()
         plt.show()
-    
-        #return rocauc
     
     def model_eval(self, train_y, train_X, test_y, test_x, cl1, cl2, cl3):
         
@@ -265,8 +335,8 @@ class NBL2():
         print(metrics.classification_report(self.test_y, predict, digits=3))
         print(metrics.confusion_matrix(self.test_y, predict))
         res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
-                metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
-        return res
+                metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict, average='weighted')]
+        return res, predict, self.test_y
 
 
 class NBL3():
@@ -507,21 +577,10 @@ class NBL3():
         self.test_y = self.test_y.append(test_y10)
         self.test_y = self.test_y.append(test_y110)
         self.test_y = self.test_y.append(test_y111)
-        
-#        print(metrics.classification_report(test_y00, predicted_00, digits=3))
-#        print(metrics.confusion_matrix(test_y00, predicted_00))
-#        print(metrics.classification_report(test_y01, predicted_01, digits=3))
-#        print(metrics.confusion_matrix(test_y01, predicted_01))
-#        print(metrics.classification_report(test_y10, predicted_10, digits=3))
-#        print(metrics.confusion_matrix(test_y10, predicted_10))
-#        print(metrics.classification_report(test_y110, predicted_110, digits=3))
-#        print(metrics.confusion_matrix(test_y110, predicted_110))
-#        print(metrics.classification_report(test_y111, predicted_111, digits=3))
-#        print(metrics.confusion_matrix(test_y111, predicted_111))
-        
+  
         print(metrics.classification_report(self.test_y, predict, digits=3))
         print(metrics.confusion_matrix(self.test_y, predict))
 
         res =  [metrics.f1_score(self.test_y, predict,average='weighted'),
-                metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict,average='weighted')]
-        return res
+                metrics.accuracy_score(self.test_y, predict),metrics.roc_auc_score(self.test_y, predict, average='weighted')]
+        return res, predict, self.test_y
