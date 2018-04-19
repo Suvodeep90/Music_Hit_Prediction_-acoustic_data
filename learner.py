@@ -133,7 +133,7 @@ class learner():
             print("AdaBoost Training")
             self.clf = AdaBoostClassifier()
         elif model == 'KNN':
-            print("AdaBoost Training")
+            print("KNN Training")
             self.clf = KNeighborsClassifier(n_neighbors=10)
         elif model == 'NBL2':
             print("NBL2 model Training")
