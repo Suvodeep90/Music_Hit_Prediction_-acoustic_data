@@ -73,6 +73,6 @@ if __name__ == "__main__":
         11) Our Implementation of Naive Bayes: NBO
     ++++++++++++++++++++++++++++++++++++
     """
-    _learner = "KNN"
+    _learner = "NBL3"
     result = model.train(_learner)
     print(result)
