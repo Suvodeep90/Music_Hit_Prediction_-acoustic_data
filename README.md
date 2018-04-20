@@ -36,7 +36,8 @@ this issue, we implemented the SMOTE algorithm to sample the minority class (hit
 
 ## Instructions ##
 1. Using main.py, choose the settings and algorithm to perform hit song prediction. These same instructions are listed in main.py.
-2. For "algo", select either "RF" for random forest or "DT" for decision tree for the recursive feature selection setting.
+2. For "algo", select either "RF" for random forest or "DT" for decision tree for the recursive feature selection setting. This will only be used if the boolean for 
+Feature Selection is "True" and "recursive_feature_selector" is chosen.
 3. For "feature_selector", select among "consistency_subset", "selectkBest", or "recursive_feature_selector" to reduce the dimensionality
 of the dataset by choosing the most relevant features.
 4. When setting the data pre-processing, the parameters are "file_path", "data_path", "algo", "feature_selector", and three booleans. 
