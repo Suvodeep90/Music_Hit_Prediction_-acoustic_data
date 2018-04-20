@@ -24,6 +24,7 @@ The algorithms we used from built-in libraries are:
 * Logistic Regression
 * Decision Trees
 * Random Forests
+* Adaboost
 
 We also implemented the following algorithms from scratch:
 * Neural Network
