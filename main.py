@@ -25,7 +25,7 @@ if __name__ == "__main__":
         2) DT
     ++++++++++++++++++++++++++++++++++++
     """
-    algo = 'RF'
+    algo = 'DT'
     """
     ++++++++++++++++++++++++++++++++++++
     Feature Selector:
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         3) recursive_feature_selector
     ++++++++++++++++++++++++++++++++++++
     """
-    feature_selector = 'consistency_subset'
+    feature_selector = 'selectkBest'
     dProcessor = dataProcessor.dataProcessor()
     """
     ++++++++++++++++++++++++++++++++++++
@@ -73,6 +73,6 @@ if __name__ == "__main__":
         11) Our Implementation of Naive Bayes: NBO
     ++++++++++++++++++++++++++++++++++++
     """
-    _learner = "NBL3"
+    _learner = "RF"
     result = model.train(_learner)
     print(result)
